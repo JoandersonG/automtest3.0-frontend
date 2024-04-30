@@ -1,6 +1,6 @@
 import { TextField } from "@mui/material";
 
-export function buildTextField(label: string, value: string, onChange: any, smallSize?: boolean) {
+export function buildTextField(label: string, value: string, onChange: any, smallSize?: boolean, disabled?: boolean) {
     if (smallSize) {
         return <TextField 
                     id="outlined-basic" 
@@ -9,6 +9,7 @@ export function buildTextField(label: string, value: string, onChange: any, smal
                     value={value ? value : ''} 
                     onChange={onChange}
                     fullWidth
+                    disabled={disabled ? true : false}
                     style={{
                         marginBottom: '12px'
                     }}

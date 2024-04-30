@@ -1,4 +1,5 @@
 import { ButtonPrimary, Stack, Text3 } from "@telefonica/mistica";
+import { useState } from "react";
 
 export enum MenuButton {
     ABOUT = 'About AutomTest',
@@ -12,17 +13,25 @@ export type MenuButtonState = {
     menuButton: MenuButton,
     enabled: boolean,
     isCurrentlyActive: boolean,
-    page: any
+    showPage: any
 }
 
 
 
 export default function ApplicationMenu(props: {buttonsState: MenuButtonState[], selectButton: (bt: MenuButton) => void}) {
 
-    console.log('buttonsState', props.buttonsState)
+    //console.log('buttonsState', props.buttonsState)
+
+    const [currentMenuButton, setCurrentMenuButton] = useState();
 
     const selectedButtonColor = '#173f5f'
     const unselectedButtonColor = '#20689b'
+
+    function showButtons(buttonsState: MenuButtonState[]) {
+        return (
+            buttonsState.map(state => menuButton(state))
+        )
+    }
 
     function menuButton(buttonState: MenuButtonState) {
         return (<ButtonPrimary 
@@ -48,13 +57,7 @@ export default function ApplicationMenu(props: {buttonsState: MenuButtonState[],
         <div>
             <Stack space={40}>
                 {
-                    props.buttonsState?.map((state: MenuButtonState) => {
-                        return (
-                            <>
-                            {menuButton(state)}
-                            </>
-                        )
-                    })
+                   showButtons(props.buttonsState)
                 }
             </Stack>
         </div>

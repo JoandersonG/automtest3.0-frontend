@@ -1,51 +1,62 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, TextField } from "@mui/material";
-import { Stack, Text5 } from "@telefonica/mistica";
 import { Method } from "../../models/Method";
-import { ContentType } from "../insert-methods-info/ContentType";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { EquivalenceClass } from "../../models/EquivalenceClass";
-import { v1 as uuidv1 } from 'uuid';
 import EquivClassList from "./EquivClassList";
 import EquivClassCreateOrUpdate from "./EquivClassCreateOrUpdate";
 
 
-export default function EquivalenceClassesContent(props: {methods: Method[]}) {
+export default function EquivalenceClassesContent(props: {methods: Method[], setMethods: any}) {
 
-    function updateView(newContent: ContentType) {
-        if (newContent == ContentType.NEW_EQUIV_CLASS) {
-            setCurrentView(possibleViews.newEquivClass)
-        }
+    function removeEquivClass(method_id: string, eq_class_id: string) {
+        props.setMethods((methods_: Method[]) => methods_.map(m_ => {
+            console.log('m_', m_)
+            if (m_ && m_.identifier == method_id) {
+                m_.equivClasses = m_.equivClasses.filter(eqc => eqc.identifier != eq_class_id)
+            }
+            return m_
+        }));
+        console.log('removed equiv class. Now:', props.methods)
     }
 
-    const [newEquivClass, setnewEquivClass] = useState<EquivalenceClass>({
-        identifier: uuidv1(),
-        name: '',
-        numberOfCases: 0,
-        expectedOutputRange: {
-            v1: '',
-            v2: '',
-            v3: ''
-        },
-        acceptableParamRanges: [
-            {
-                param_id: '1',//TODO: como vai ficar?
-                v1: '',
-                v2: '',
-                v3: ''
-            }
-        ]
-    })
+    const CREATE_UPDATE = 'CREATE_UPDATE'
+    const LIST_EQUIV_CLASSES = 'LIST_EQUIV_CLASSES'
+    
+    const [isCreateEquivClass, setIsCreateEquivClass] = useState(true);
+    const [currentEquivClass, setCurrentEquivClass] = useState<EquivalenceClass>()
+    
+    useEffect(() => {
+        console.log('EquivalenceClassesContent>methods updated to', props.methods)
+    }, [props.methods])
 
-    const [possibleViews, setPossibleView] = useState({
-        equivClassList: <EquivClassList methods={props.methods} showCreateContent={() => setCurrentView(possibleViews.newEquivClass)} />,
-        newEquivClass: <EquivClassCreateOrUpdate methodsAvaliable={props.methods}/>
-    });
+    const equivClassList = <EquivClassList 
+                            methods={props.methods} 
+                            onRemove={(m_id: string, ec_id: string) => removeEquivClass(m_id, ec_id)}
+                            openEdit={(m_id: string, ec_id: string) => {
+                                setIsCreateEquivClass(false)
+                                //console.log({m_id, ec_id, found: props.methods.find(m => m.identifier == m_id)?.equivClasses.find(e => e.identifier == ec_id)})
+                                
+                                setCurrentEquivClass(props.methods.find(m => m.identifier == m_id)?.equivClasses.find(e => e.identifier == ec_id))
+                                setCurrentView(CREATE_UPDATE)
+                            }}
+                            showCreateContent={() => {
+                                setIsCreateEquivClass(true)
+                                setCurrentEquivClass(undefined)
+                                setCurrentView(CREATE_UPDATE)
+                            }} />;
+    const equivClassCreateUpdate = <EquivClassCreateOrUpdate
+                                    methodsAvaliable={props.methods} 
+                                    isCreate={isCreateEquivClass} 
+                                    setMethods={props.setMethods}
+                                    showEquivClassList={() => {
+                                        setCurrentView(LIST_EQUIV_CLASSES)
+                                    }}
+                                    equivClass={currentEquivClass}/>;
 
-    const [currentView, setCurrentView] = useState(possibleViews.equivClassList)
+    const [currentView, setCurrentView] = useState(LIST_EQUIV_CLASSES)
 
     return (
         <>
-            {currentView}
+            {currentView == LIST_EQUIV_CLASSES ? equivClassList : equivClassCreateUpdate}
         </>
     )
 }

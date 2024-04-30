@@ -1,6 +1,7 @@
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, TextField } from "@mui/material";
 import { Stack, Text5 } from "@telefonica/mistica";
 import { Method } from "../../models/Method";
+import { useEffect, useState } from "react";
 
 const helpText = 
     <div>
@@ -34,7 +35,14 @@ example.
 With those info, it's possible to define an equivalence class.
 Now it's your your turn: insert the equivalence classes you decide relevant to each previously mapped
 method.`
-export default function EquivClassList(props: {methods: Method[], showCreateContent: any}) {
+export default function EquivClassList(props: {methods: Method[], onRemove: any, showCreateContent: any, openEdit: any}) {
+
+    const [avaliableMethods, setAvaliableMethods] = useState<Method[]>()
+
+    useEffect(() => {
+        console.log('EquivClassList>methods updated to', props.methods)
+        setAvaliableMethods(props.methods)
+    }, [props.methods])
 
     return (
         <div>
@@ -70,7 +78,13 @@ export default function EquivClassList(props: {methods: Method[], showCreateCont
             </Accordion>
                         
             {
-                props.methods.map(m => m.equivClasses.map(ec => <Entry method={m.name} equivClassName={ec.name} />))
+                avaliableMethods?.map(m => m.equivClasses.map(ec => 
+                                                                <Entry 
+                                                                    key={ec.identifier}
+                                                                    method={m.name} 
+                                                                    onRemove={() => props.onRemove(m.identifier, ec.identifier)}
+                                                                    openEdit={() => props.openEdit(m.identifier, ec.identifier)}
+                                                                    equivClassName={ec.name} />))
             }
             
         </Box>
@@ -90,18 +104,18 @@ export default function EquivClassList(props: {methods: Method[], showCreateCont
     )
 }
 
-function Entry(props: {method: string, equivClassName: string}) {
+function Entry(props: {key: any, method: string, onRemove: any, equivClassName: string, openEdit: any}) {
     const sxForDisabledFields = {
         '& .Mui-disabled': {
-            color: 'rgba(0, 0, 0, 1)',
-            WebkitTextFillColor: 'rgba(0, 0, 0, 1)'
+            color: 'rgba(1, 1, 1, 1)',
+            WebkitTextFillColor: 'rgba(1, 1, 1, 1)'
         }
     };
 
     return (
-        <div style={{
-            backgroundColor: '#ffffff',
-            border: '1px solid #D3D3D3', 
+        <div key={props.key} style={{
+            // backgroundColor: '#ffffff',
+            border: '1px solid rgba(1, 1, 1, 0.5)', 
             borderRadius: '5px',
             padding: '16px',
             marginTop: '16px'
@@ -112,7 +126,7 @@ function Entry(props: {method: string, equivClassName: string}) {
                         <TextField sx={sxForDisabledFields} disabled fullWidth id="outlined-basic" label={"Method"} variant="outlined" contentEditable={false} value={props.method} style={{ marginBottom: '12px'}}/>
                     </Grid>
                     <Grid item xs={2}>
-                        <Button variant="outlined" color="secondary" disableElevation fullWidth style={{height: '55px'}} onClick={() => 1}>Edit</Button>
+                        <Button variant="outlined" color="secondary" disableElevation fullWidth style={{height: '55px'}} onClick={props.openEdit}>Edit</Button>
                     </Grid>
                 </Grid>
                 <Grid container spacing={1}>
@@ -120,7 +134,7 @@ function Entry(props: {method: string, equivClassName: string}) {
                         <TextField  sx={sxForDisabledFields} disabled fullWidth id="outlined-basic" label={"Equivalence class"} variant="outlined" contentEditable={false} value={props.equivClassName}/>
                     </Grid>
                     <Grid item xs={2}>
-                        <Button variant="outlined" color="error" disableElevation fullWidth style={{height: '55px'}} onClick={() => 1}>Remove</Button>
+                        <Button variant="outlined" color="error" disableElevation fullWidth style={{height: '55px'}} onClick={() => props.onRemove(props.method)}>Remove</Button>
                     </Grid>
                 </Grid>
             </Stack>

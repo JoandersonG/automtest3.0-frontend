@@ -31,14 +31,14 @@ export default function ApplicationBody() {
                 name: 'minorAge',
                 numberOfCases: 10,
                 expectedOutputRange: {
-                    v1: 'true',
-                    v2: '',
+                    v1: '[abc123][numbers][letters]',
+                    v2: '[1~2][2~3][3~4]',
                     v3: ''
                 },
                 acceptableParamRanges: [{
                     param_id: '1',
-                    v1: '[1-12][1-1]',
-                    v2: '',
+                    v1: '[numbers][letters]',
+                    v2: '[2~6][3~8]',
                     v3: ''
                 }]
             }, {
@@ -46,14 +46,14 @@ export default function ApplicationBody() {
                 name: 'minorAge',
                 numberOfCases: 10,
                 expectedOutputRange: {
-                    v1: 'false',
-                    v2: '',
+                    v1: '[joand][numbers][letters]',
+                    v2: '[1~2][2~3][3~4]',
                     v3: ''
                 },
                 acceptableParamRanges: [{
                     param_id: '1',
-                    v1: '[18-120][1-1]',
-                    v2: '',
+                    v1: '[[joand][letters]',
+                    v2: '[2~6][3~8]',
                     v3: ''
                 }]
             }],
@@ -164,29 +164,38 @@ export default function ApplicationBody() {
             menuButton: MenuButton.ABOUT,
             isCurrentlyActive: false,
             enabled: true,
-            page: <AboutPage />
+            showPage: () => <AboutPage />
         },{
             menuButton: MenuButton.USER_STORY,
             isCurrentlyActive: false,
             enabled: true,
-            page: <UserStoryContent />
+            showPage: () => <UserStoryContent />
         },{
             menuButton: MenuButton.METHOD_INFO,
             isCurrentlyActive: false,
             enabled: true,
-            page: <InsertMethodsInfoContent methods={methods}/>
+            showPage: () => <InsertMethodsInfoContent methods={methods}/>
         },{
             menuButton: MenuButton.EQUIVALENCE_CLASS,
             isCurrentlyActive: true,
             enabled: true,
-            page: <EquivalenceClassesContent methods={methods}/>
+            showPage: () => <EquivalenceClassesContent methods={methods} setMethods={setMethods}/>
         },{
             menuButton: MenuButton.GENERATE_TEST,
             isCurrentlyActive: false,
             enabled: false,
-            page: <div>Generate Test</div>
+            showPage: () => <div>Generate Test</div>
         },
     ]) 
+
+    // const [menuButtons, setMenuButtons] = useState<any[]>([
+    //     <MenuBttn enabled menuButton={MenuButton.ABOUT} page={<AboutPage />}/>
+    // ])
+
+    
+    useEffect(() => {
+        console.log('methods updated from root to value:', methods)
+    }, [methods])
 
     function selectButton(button: MenuButton) {
         const updated = menuButtons.map((bt: MenuButtonState) => {
@@ -197,7 +206,7 @@ export default function ApplicationBody() {
             }
             return bt;
         });
-        console.log('updated selected button')
+        //console.log('updated selected button')
         setMenuButtons(updated)
     }
 
@@ -228,7 +237,7 @@ export default function ApplicationBody() {
              }}>
             <ApplicationMenu buttonsState={menuButtons} selectButton={selectButton}/>
             <div style={{marginInlineStart: '24px', width: '100%'}}>
-                {menuButtons.filter((m: MenuButtonState) => m.isCurrentlyActive)[0].page}
+                {menuButtons.filter((m: MenuButtonState) => m.isCurrentlyActive)[0].showPage()}
             </div>
         </div>
         </>
