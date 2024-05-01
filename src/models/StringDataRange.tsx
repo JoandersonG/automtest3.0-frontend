@@ -9,7 +9,7 @@ export const StringRangePieceType = [
 
 export type StringDataRangePiece = {
     id: string,
-    type: string,
+    type: any,
     content: string,
     from: string,
     to: string

@@ -1,15 +1,22 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, FormControl, Grid, InputLabel, MenuItem, Select } from "@mui/material"
-import { Text3, Text5 } from "@telefonica/mistica"
+import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Radio, Select, TextField } from "@mui/material"
+import { Text3, Text5, useSnackbar } from "@telefonica/mistica"
 import { buildTextField } from "../CustomComponents"
 import { Method } from "../../models/Method"
 import { useEffect, useState } from "react"
 import { EquivalenceClass } from "../../models/EquivalenceClass"
-import { DataType, DataTypes } from "../../models/DataType"
 import { DataRange } from "../../models/DataRange"
-import { StringDataRange, StringDataRangePiece, StringRangePieceType } from "../../models/StringDataRange"
+import { StringDataRangePiece, StringRangePieceType } from "../../models/StringDataRange"
 import { v1 as uuidv1 } from 'uuid';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs, { Dayjs } from "dayjs"
+import DateChip from "./DateChip"
+import CharChip from "./CharChip"
+
 
 export default function EquivClassCreateOrUpdate(props: {methodsAvaliable: Method[], isCreate: boolean, setMethods: any, showEquivClassList: any, methodIndex?: number, equivClass?: EquivalenceClass}) {
+    
 
     useEffect(() => {
         console.log('equivClass', props.equivClass)        
@@ -41,7 +48,33 @@ export default function EquivClassCreateOrUpdate(props: {methodsAvaliable: Metho
         elements.splice(index, 1);
         console.log(elements)
         return elements.join('');
-      }
+    }
+
+    function showReturnComponent() {
+        if (currentMethod.returnType.toLowerCase() == 'boolean') {
+            return <BooleanRangeComponent range={returnValue} setRange={setReturnValue} />
+        }
+        if (currentMethod.returnType.toLowerCase() == 'char') {
+            return <CharRangeComponent range={returnValue} setRange={setReturnValue} />
+        }
+        if (currentMethod.returnType.toLowerCase() == 'date') {
+            return <DateRangeComponent range={returnValue} setRange={setReturnValue} />
+        }
+        if (currentMethod.returnType.toLowerCase() == 'string') {
+            return <StringRangeComponent 
+                range={returnValue} 
+                setRange={setReturnValue}
+                addEmptyStringRange={() => setReturnValue({...returnValue, v1: returnValue.v1 + '[]', v2: returnValue.v2 + '[]'})}
+                onRemove={(index: number) => setReturnValue({...returnValue, v1: removeElementByIndex(returnValue.v1, index), v2: removeElementByIndex(returnValue.v2, index)})}
+            /> 
+        }
+        if (currentMethod.returnType.toLowerCase() == 'double' 
+                || currentMethod.returnType.toLowerCase() == 'float' 
+                || currentMethod.returnType.toLowerCase() == 'int') {
+                    return <NumberRangeComponent type={currentMethod.returnType.toUpperCase()} range={returnValue} setRange={setReturnValue} />
+                }
+        return <div></div>
+    }
 
     return (
         <div>
@@ -63,7 +96,16 @@ export default function EquivClassCreateOrUpdate(props: {methodsAvaliable: Metho
                                 value={selectedMethodName}
                                 disabled={!props.isCreate}
                                 label="Method related to this Equivalence Class*"
-                                onChange={val => setSelectedMethodName(val.target.value)}>
+                                // onChange={val => setSelectedMethodName(val.target.value)}>
+                                onChange={val => {
+                                        const method = props.methodsAvaliable.find(m => m.name == val.target.value);
+                                        if (method) {
+                                            setSelectedMethodName(val.target.value)
+                                            setCurrentMethod(method)
+                                        } else {
+                                            console.warn('Method not found in list of avaliable methods: ' + val.target.value)
+                                        }
+                                    }}>
                                 {
                                     getMethodsFromMethodList().map(v => <MenuItem value={v.value}>{v.text}</MenuItem>)
                                 }
@@ -72,28 +114,7 @@ export default function EquivClassCreateOrUpdate(props: {methodsAvaliable: Metho
 
                         {buildTextField("Equivalence class name*", equivClassName, (v: any) => setEquivClassName(v.target.value))}
                         {buildTextField("Number of test cases to be generated*", '' + numberOfCases, (v: any) => setNumberOfCases(v.target.value))}
-                                
-                        {/* Below: Return range for the equivalence class */}
-                        
-                        <Box style={{
-                            // backgroundColor: 'red',
-                            marginTop: '16px',
-                            marginBottom: '12px',
-                            paddingTop: '16px',
-                            // backgroundColor: 'white',
-                            border: '1px solid lightgray',
-                            borderRadius: '5px', }}
-                        >
-                            <div style={{marginLeft: '12px'}}><Text3  regular color="black">Below, design the pattern of the returning String:</Text3></div>
-
-                            <HorizontalStringRangeScroll 
-                                range={returnValue} 
-                                setRange={setReturnValue}
-                                addEmptyStringRange={() => setReturnValue({...returnValue, v1: returnValue.v1 + '[]', v2: returnValue.v2 + '[]'})}
-                                onRemove={(index: number) => setReturnValue({...returnValue, v1: removeElementByIndex(returnValue.v1, index), v2: removeElementByIndex(returnValue.v2, index)})}
-                            />
-
-                        </Box>
+                        {showReturnComponent()}
                 </FormControl>
             </Box>
             <Grid container justifyContent="flex-end" spacing={1} marginTop={1}>
@@ -139,7 +160,7 @@ export default function EquivClassCreateOrUpdate(props: {methodsAvaliable: Metho
     )
 }
 
-function StringRangeComponent(props: { onRemove: any, piece: StringDataRangePiece, updatePiece: any, moveRight: any, moveLeft: any}) {
+function StringRangePiece(props: { onRemove: any, piece: StringDataRangePiece, updatePiece: any, moveRight: any, moveLeft: any}) {
 
     // const [type, setType] = useState(props.type ? props.type : '');
     // const [content, setContent] = useState(props.content ? props.content : '')
@@ -210,7 +231,246 @@ function StringRangeComponent(props: { onRemove: any, piece: StringDataRangePiec
     )
 }
 
-function HorizontalStringRangeScroll(props: {range: DataRange, setRange: any, addEmptyStringRange: any, onRemove: any}) {
+function BooleanRangeComponent(props: {range: DataRange, setRange: any}) {
+
+    return (
+        <Box style={{
+            marginBottom: '12px',
+            paddingTop: '16px',
+            border: '1px solid rgba(1, 1, 1, 0.3)',
+            borderRadius: '5px', }}
+        >
+           
+            <div style={{
+                display: 'flex',
+                overflowX: 'auto',
+                paddingBottom: '8px',
+                width: '630px',
+                scrollbarWidth: 'thin', // This applies to Firefox
+                msOverflowStyle: 'none',  // This applies to Internet Explorer 10+
+            }}>
+            <div style={{marginLeft: '12px', marginTop: '8px'}}><Text3  regular color="black">Set the expected <span style={{ fontWeight: 'bold' }}>boolean</span> return value:</Text3></div>
+
+            <div style={{width: '110px'}}></div>
+                <Radio style={{color: 'black'}} value={'true'} checked={props.range.v1 != 'false'} onChange={(val) => props.setRange({...props.range, v1: val.target.value})} />
+                <div style={{width: '4px'}}></div>
+                <div style={{marginTop: '8px'}}><Text3  regular color="black">True</Text3></div>
+                <div style={{width: '40px'}}></div>
+                <Radio style={{color: 'black'}} value={'false'} checked={props.range.v1 == 'false'} onChange={(val) => props.setRange({...props.range, v1: val.target.value})}/>
+                <div style={{width: '4px'}}></div>
+                <div style={{marginTop: '8px'}}><Text3  regular color="black">False</Text3></div>
+            </div>
+
+        </Box>
+       
+    )
+}
+
+function CharRangeComponent(props: {range: DataRange, setRange: any}) {
+
+    const [charValue, setCharValue] = useState('');
+
+    function updateRange(range: DataRange) {
+        //TODO: validações
+
+        
+        props.setRange(range)
+        
+    }
+
+    function onCharChange(newVal: any) {
+        if (newVal.target.value.length > 1) {
+            return; //Do not update. only one char at a time is allowed
+        }
+        setCharValue(newVal.target.value)
+    }
+
+    function addChar() {
+        if (charValue != '' && !props.range.v1.includes('[' + charValue + ']')) {
+            props.setRange({...props.range, v1: props.range.v1 + '[' + charValue + ']'})
+        }
+        setCharValue('')
+    }
+
+    return (
+        <Box style={{
+            // backgroundColor: 'red',
+            // marginTop: '16px',
+            marginBottom: '12px',
+            paddingTop: '16px',
+            // backgroundColor: 'white',
+            border: '1px solid rgba(1, 1, 1, 0.3)',
+            borderRadius: '5px', }}
+        >
+            <div style={{marginLeft: '12px'}}><Text3  regular color="black">Below, set the possible values for the returning <span style={{ fontWeight: 'bold' }}>Character</span>:</Text3></div>
+
+            <div style={{
+                display: 'flex',
+                overflowX: 'auto',
+                padding: '16px',
+                paddingBottom: '0px',
+                width: '630px',
+                scrollbarWidth: 'thin', // This applies to Firefox
+                msOverflowStyle: 'none',  // This applies to Internet Explorer 10+
+            }}>
+
+                {buildTextField("Any character", charValue, onCharChange)}
+                <div style={{width: '8px'}}></div>
+                <Button variant="outlined" color="secondary" disableElevation style={{height: '55px'}} onClick={addChar}>Add Character</Button>
+            </div>
+            <CharChip range={props.range} setRange={props.setRange} />
+
+        </Box>
+       
+    )
+}
+
+function DateRangeComponent(props: {range: DataRange, setRange: any}) {
+
+    const [alsoIncludeDate, setAlsoIncludeDate] = useState<Dayjs>();
+    const [fromDate, setFromDate] = useState<Dayjs>();
+    const [toDate, setToDate] = useState<Dayjs>();
+
+    const {openSnackbar} = useSnackbar();
+
+
+    // useEffect(() => {
+    //     //TODO: validações
+        
+    //     if (fromDate) {
+    //         props.setRange({...props.range, v1: props.range.v1 + '[' + fromDate?.format('YYYY-MM-DD') + ']'})
+    //     }
+    // }, [fromDate])
+
+    function updateRange(type: 'from' | 'to', value?: any) {
+        //TODO: validações
+        //openSnackbar({message: '"From" shloud be a date befor or equal to value in "To"', type: 'CRITICAL', buttonText: 'buttonText', withDismiss: true});
+
+
+        if (type == 'from') {
+            setFromDate(value)
+            props.setRange({...props.range, v1: fromDate?.format('YYYY-MM-DD')})
+        } else {
+            setToDate(value)
+            props.setRange({...props.range, v2: toDate?.format('YYYY-MM-DD')})
+        }
+        
+    }
+
+    function addDate() {
+        if (alsoIncludeDate) {
+            props.setRange({...props.range, v3: props.range.v3 + '[' + alsoIncludeDate?.format('YYYY-MM-DD') + ']'})
+        }
+    }
+
+    return (
+        <Box style={{
+            // backgroundColor: 'red',
+            // marginTop: '16px',
+            marginBottom: '12px',
+            paddingTop: '16px',
+            // backgroundColor: 'white',
+            border: '1px solid rgba(1, 1, 1, 0.3)',
+            borderRadius: '5px', }}
+        >
+            <div style={{marginLeft: '12px'}}><Text3  regular color="black">Below, set the range for the returning <span style={{ fontWeight: 'bold' }}>Date</span>:</Text3></div>
+
+            <div style={{
+                display: 'flex',
+                overflowX: 'auto',
+                padding: '16px',
+                width: '630px',
+                scrollbarWidth: 'thin', // This applies to Firefox
+                msOverflowStyle: 'none',  // This applies to Internet Explorer 10+
+            }}>
+
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker label={'From'} value={fromDate} onChange={(date) => updateRange('from', date)}  />
+                </LocalizationProvider>
+                <div style={{width: '8px'}}></div>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker label={'To'} value={toDate} onChange={(date) => updateRange('to', date)} />
+                </LocalizationProvider>
+
+                <div style={{width: '8px'}}></div>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker label={'Also include'} value={alsoIncludeDate} onChange={(date) => setAlsoIncludeDate(date != null ? date : undefined)} />
+                </LocalizationProvider>
+
+                <div style={{width: '8px'}}></div>
+                <Button variant="outlined" color="secondary" disableElevation style={{height: '55px'}} onClick={addDate}>Add Date</Button>
+
+            </div>
+            <DateChip range={props.range} setRange={props.setRange} />
+
+        </Box>
+       
+    )
+}
+
+function NumberRangeComponent(props: {type: 'INT' | 'DOUBLE' | 'FLOAT' | string, range: DataRange, setRange: any}) {
+
+    function updateRange(range: DataRange) {
+        //TODO: validações
+
+        
+        props.setRange(range)
+        
+    }
+
+    function getReturningType() {
+        return props.type == 'INT' ? 'integer' : props.type.toLowerCase()
+    }
+
+    function getTextInput(label: string, value: string, onChange: any, helperText?: string, larger?: boolean) {
+        return <TextField id="outlined-basic" variant="outlined" 
+            label={label} 
+            value={value ? value : ''} 
+            onChange={onChange}
+            fullWidth
+            helperText={helperText}
+            style={{
+                marginBottom: '12px',
+                width: larger ? '280px' : '180px'
+            }}
+        />
+    }
+
+    return (
+        <Box style={{
+            // backgroundColor: 'red',
+            // marginTop: '16px',
+            marginBottom: '12px',
+            paddingTop: '16px',
+            // backgroundColor: 'white',
+            border: '1px solid rgba(1, 1, 1, 0.3)',
+            borderRadius: '5px', }}
+        >
+            <div style={{marginLeft: '12px'}}><Text3  regular color="black">Below, set the value range for the returning <span style={{ fontWeight: 'bold' }}>{getReturningType()}</span> number:</Text3></div>
+
+            <div style={{
+                display: 'flex',
+                overflowX: 'auto',
+                padding: '16px',
+                paddingBottom: '0px',
+                width: '630px',
+                scrollbarWidth: 'thin', // This applies to Firefox
+                msOverflowStyle: 'none',  // This applies to Internet Explorer 10+
+            }}>
+
+                {getTextInput('From', props.range.v1, (newVal: any) => updateRange({...props.range, v1: newVal.target.value}), 'Start of ' + getReturningType() + ' range')}
+                <div style={{width: '8px'}}></div>
+                {getTextInput('To', props.range.v2, (newVal: any) => updateRange({...props.range, v2: newVal.target.value}), 'End of ' + getReturningType() + ' range')}
+                <div style={{width: '8px'}}></div>
+                {getTextInput('Also include', props.range.v3, (newVal: any) => updateRange({...props.range, v3: newVal.target.value}), 'Semicolon-separated ' + getReturningType() + ' numbers to include', true)}
+
+            </div>
+        </Box>
+       
+    )
+}
+
+function StringRangeComponent(props: {range: DataRange, setRange: any, addEmptyStringRange: any, onRemove: any}) {
 
     const [pieces, setPieces] = useState(getRangeData(props.range).pieces);
 
@@ -240,14 +500,14 @@ function HorizontalStringRangeScroll(props: {range: DataRange, setRange: any, ad
     function getRangeData(range: DataRange) {
         //v1: [int][abc123][false]
         //v2: [1~2][3~4][1~1]
-        // console.log('props.HorizontalStringRangeScroll=', props.range)
+        // console.log('props.StringRangeComponent=', props.range)
         
         if (!props.range.v1) <div></div>
 
         const content = props.range.v1.length > 2 ? props.range.v1.slice(1, -1).split('][') : [];
         const quantity = props.range.v2.length > 2 ? props.range.v2.slice(1, -1).split('][') : [];
         
-        // console.log('content.HorizontalStringRangeScroll=', content)
+        // console.log('content.StringRangeComponent=', content)
         const pieces : StringDataRangePiece[] = []
         for (let i = 0; i < content.length; i++) {
             const contentPiece = content[i]
@@ -299,41 +559,44 @@ function HorizontalStringRangeScroll(props: {range: DataRange, setRange: any, ad
     }
 
     return (
-        <div style={{
-            display: 'flex',
-            overflowX: 'auto',
-            padding: '16px',
-            width: '630px',
-            // marginTop: '16px',
+        <Box style={{
+            // backgroundColor: 'red',
+            marginTop: '16px',
             marginBottom: '12px',
+            paddingTop: '16px',
             // backgroundColor: 'white',
-            // border: '1px solid lightgray',
-            // borderRadius: '5px',
-            scrollbarWidth: 'thin', // This applies to Firefox
-            msOverflowStyle: 'none',  // This applies to Internet Explorer 10+
-            // '&::-webkit-scrollbar': { // This applies to WebKit browsers like Chrome and Safari
-            // '&::WebkitScrollbar': {
-            //   width: '8px',
-            //   height: '8px'
-            // }
-          }}>
-            {
-                pieces.map((p: StringDataRangePiece) => 
-                                        <StringRangeComponent 
-                                                onRemove={() => updatePieces(pieces.filter(inner_p => inner_p.id != p.id))}
-                                                piece={p}
-                                                updatePiece={(updated: any) => {
-                                                    console.log('updatedPiece:', updated)
-                                                    updatePieces(pieces.map(p_ => p_.id == updated.id ? updated : p_))
-                                                }}
-                                                moveLeft={() => updatePieces(moveElementLeft(pieces, pieces.findIndex(p_ => p.id == p_.id)))}
-                                                moveRight={() => updatePieces(moveElementRight(pieces, pieces.findIndex(p_ => p.id == p_.id)))}
-                                                />)
-            }
-            <div style={{width: '100%'}}></div>
+            border: '1px solid rgba(1, 1, 1, 0.3)',
+            borderRadius: '5px', }}
+        >
+            <div style={{marginLeft: '12px'}}><Text3  regular color="black">Below, design the pattern of the returning String:</Text3></div>
+            <div style={{
+                display: 'flex',
+                overflowX: 'auto',
+                padding: '16px',
+                width: '630px',
+                marginBottom: '12px',
+                scrollbarWidth: 'thin', // This applies to Firefox
+                msOverflowStyle: 'none',  // This applies to Internet Explorer 10+
+            }}>
+                {
+                    pieces.map((p: StringDataRangePiece) => 
+                                            <StringRangePiece 
+                                                    onRemove={() => updatePieces(pieces.filter(inner_p => inner_p.id != p.id))}
+                                                    piece={p}
+                                                    updatePiece={(updated: any) => {
+                                                        console.log('updatedPiece:', updated)
+                                                        updatePieces(pieces.map(p_ => p_.id == updated.id ? updated : p_))
+                                                    }}
+                                                    moveLeft={() => updatePieces(moveElementLeft(pieces, pieces.findIndex(p_ => p.id == p_.id)))}
+                                                    moveRight={() => updatePieces(moveElementRight(pieces, pieces.findIndex(p_ => p.id == p_.id)))}
+                                                    />)
+                }
+                <div style={{width: '100%'}}></div>
 
-            <Button variant="outlined" color="primary" disableElevation fullWidth style={{height: '213px', maxWidth: '50px'}} 
-                onClick={() => updatePieces([...pieces, {id: uuidv1(), type: '', content: '', from: '', to: ''}])}>Add more</Button>
-        </div>
+                <Button variant="outlined" color="primary" disableElevation fullWidth style={{height: '213px', maxWidth: '50px'}} 
+                    onClick={() => updatePieces([...pieces, {id: uuidv1(), type: '', content: '', from: '', to: ''}])}>Add more</Button>
+            </div>
+        
+        </Box>
     );
   }

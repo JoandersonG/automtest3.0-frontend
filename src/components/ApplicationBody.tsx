@@ -25,7 +25,7 @@ export default function ApplicationBody() {
             identifier: '1',
             name: 'isMinorAge',
             className: 'AgeManager',
-            returnType: 'boolean',
+            returnType: 'string',
             equivClasses: [{
                 identifier: '1',
                 name: 'minorAge',
@@ -66,9 +66,9 @@ export default function ApplicationBody() {
             ]
         }, {
             identifier: '2',
-            name: 'anotherMethod',
+            name: 'anotherMethod2',
             className: 'AgeManager',
-            returnType: 'integer',
+            returnType: 'int',
             equivClasses: [],
             parameters: [
                 {
@@ -87,9 +87,9 @@ export default function ApplicationBody() {
             ]
         }, {
             identifier: '3',
-            name: 'anotherMethod',
+            name: 'anotherMethod3',
             className: 'AgeManager',
-            returnType: 'integer',
+            returnType: 'float',
             equivClasses: [],
             parameters: [
                 {
@@ -108,9 +108,9 @@ export default function ApplicationBody() {
             ]
         }, {
             identifier: '4',
-            name: 'anotherMethod',
+            name: 'anotherMethod4',
             className: 'AgeManager',
-            returnType: 'integer',
+            returnType: 'boolean',
             equivClasses: [],
             parameters: [
                 {
@@ -129,9 +129,67 @@ export default function ApplicationBody() {
             ]
         }, {
             identifier: '5',
-            name: 'anotherMethod',
+            name: 'anotherMethod5',
             className: 'AgeManager',
-            returnType: 'integer',
+            returnType: 'date',
+            equivClasses: [],
+            parameters: [
+                {
+                    identifier: '1',
+                    name: 'month',
+                    type: DataType.int
+                }, {
+                    identifier: '2',
+                    name: 'year',
+                    type: DataType.int
+                }, {
+                    identifier: '3',
+                    name: 'nameOfGroup',
+                    type: DataType.String
+                }, {
+                    identifier: '4',
+                    name: 'nameOfGroup',
+                    type: DataType.String
+                }, {
+                    identifier: '5',
+                    name: 'nameOfGroup',
+                    type: DataType.String
+                }
+            ]
+        }, {
+            identifier: '6',
+            name: 'anotherMethod6',
+            className: 'AgeManager',
+            returnType: 'double',
+            equivClasses: [],
+            parameters: [
+                {
+                    identifier: '1',
+                    name: 'month',
+                    type: DataType.int
+                }, {
+                    identifier: '2',
+                    name: 'year',
+                    type: DataType.int
+                }, {
+                    identifier: '3',
+                    name: 'nameOfGroup',
+                    type: DataType.String
+                }, {
+                    identifier: '4',
+                    name: 'nameOfGroup',
+                    type: DataType.String
+                }, {
+                    identifier: '5',
+                    name: 'nameOfGroup',
+                    type: DataType.String
+                }
+            ]
+        }, {
+            identifier: '7',
+            name: 'anotherMethod7',
+            className: 'AgeManager',
+            returnType: 'char',
             equivClasses: [],
             parameters: [
                 {
