@@ -3,7 +3,7 @@ import { DataType } from "./DataType"
 export type Parameter = {
     identifier: string,
     name: string,
-    type?: DataType
+    type?: string
 }
 
 export function parameterToString(param: Parameter) {

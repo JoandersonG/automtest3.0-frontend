@@ -61,7 +61,11 @@ export default function ApplicationBody() {
                 {
                     identifier: '1',
                     name: 'age',
-                    type: DataType.int
+                    type: 'int'
+                }, {
+                    identifier: '2',
+                    name: 'name',
+                    type: 'string'
                 }
             ]
         }, {
@@ -74,15 +78,15 @@ export default function ApplicationBody() {
                 {
                     identifier: '2',
                     name: 'month',
-                    type: DataType.int
+                    type: 'int'
                 }, {
                     identifier: '3',
                     name: 'year',
-                    type: DataType.int
+                    type: 'int'
                 }, {
                     identifier: '4',
                     name: 'nameOfGroup',
-                    type: DataType.String
+                    type: 'string'
                 }
             ]
         }, {
@@ -95,15 +99,15 @@ export default function ApplicationBody() {
                 {
                     identifier: '1',
                     name: 'month',
-                    type: DataType.int
+                    type: 'int'
                 }, {
                     identifier: '2',
                     name: 'year',
-                    type: DataType.int
+                    type: 'int'
                 }, {
                     identifier: '3',
                     name: 'nameOfGroup',
-                    type: DataType.String
+                    type: 'string'
                 }
             ]
         }, {
@@ -116,15 +120,15 @@ export default function ApplicationBody() {
                 {
                     identifier: '1',
                     name: 'month',
-                    type: DataType.int
+                    type: 'int'
                 }, {
                     identifier: '2',
                     name: 'year',
-                    type: DataType.int
+                    type: 'int'
                 }, {
                     identifier: '3',
                     name: 'nameOfGroup',
-                    type: DataType.String
+                    type: 'string'
                 }
             ]
         }, {
@@ -137,23 +141,23 @@ export default function ApplicationBody() {
                 {
                     identifier: '1',
                     name: 'month',
-                    type: DataType.int
+                    type: 'int'
                 }, {
                     identifier: '2',
                     name: 'year',
-                    type: DataType.int
+                    type: 'int'
                 }, {
                     identifier: '3',
                     name: 'nameOfGroup',
-                    type: DataType.String
+                    type: 'string'
                 }, {
                     identifier: '4',
                     name: 'nameOfGroup',
-                    type: DataType.String
+                    type: 'string'
                 }, {
                     identifier: '5',
                     name: 'nameOfGroup',
-                    type: DataType.String
+                    type: 'string'
                 }
             ]
         }, {
@@ -166,23 +170,23 @@ export default function ApplicationBody() {
                 {
                     identifier: '1',
                     name: 'month',
-                    type: DataType.int
+                    type: 'int'
                 }, {
                     identifier: '2',
                     name: 'year',
-                    type: DataType.int
+                    type: 'int'
                 }, {
                     identifier: '3',
                     name: 'nameOfGroup',
-                    type: DataType.String
+                    type: 'string'
                 }, {
                     identifier: '4',
                     name: 'nameOfGroup',
-                    type: DataType.String
+                    type: 'string'
                 }, {
                     identifier: '5',
                     name: 'nameOfGroup',
-                    type: DataType.String
+                    type: 'string'
                 }
             ]
         }, {
@@ -195,23 +199,23 @@ export default function ApplicationBody() {
                 {
                     identifier: '1',
                     name: 'month',
-                    type: DataType.int
+                    type: 'int'
                 }, {
                     identifier: '2',
                     name: 'year',
-                    type: DataType.int
+                    type: 'int'
                 }, {
                     identifier: '3',
                     name: 'nameOfGroup',
-                    type: DataType.String
+                    type: 'string'
                 }, {
                     identifier: '4',
                     name: 'nameOfGroup',
-                    type: DataType.String
+                    type: 'string'
                 }, {
                     identifier: '5',
                     name: 'nameOfGroup',
-                    type: DataType.String
+                    type: 'string'
                 }
             ]
         }
