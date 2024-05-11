@@ -1,3 +1,4 @@
+import { Button } from "@mui/material";
 import { ButtonPrimary, RadioButton, RadioGroup, ResponsiveLayout, Stack, Text2, Text3, Text4, Text5, TextField } from "@telefonica/mistica";
 import { useState } from "react";
 
@@ -9,7 +10,7 @@ export default function UserStoryContent() {
     return (
         <div style={{width: '100%', color: 'white'}}>
             <Stack space={24}>
-                <Text5 color="white">Paste below the User Story you want to convert:</Text5>
+                <Text5 color="black">Paste below the User Story you want to convert:</Text5>
                  <textarea
                     id="multilineTextInput"
                     value={userStory}
@@ -19,11 +20,12 @@ export default function UserStoryContent() {
                     rows={24}
                     cols={81}
                     style={{
-                        borderRadius: '10px',
-                        color: 'white',
+                        borderRadius: '5px',
+                        color: 'black',
                         fontFamily: 'inherit',
                         fontSize: '16px',
-                        backgroundColor: '#1b1f24'
+                        // backgroundColor: '#1b1f24'
+                        backgroundColor: 'transparent'
                     }}
                 />
                 <div style={{display: 'flex', margin: '24px', width: '100%'}}>
@@ -31,12 +33,12 @@ export default function UserStoryContent() {
                     <RadioGroup name="radio-group" onChange={setLanguage} defaultValue={'PT'}>
                             <div style={{marginInlineEnd: '24px'}}>
                             <RadioButton value="PT">
-                                <Text3 regular>Português</Text3>
+                                <Text3 regular color="black">Português</Text3>
                             </RadioButton>
                             </div>
                             <div>
                             <RadioButton value="EN">
-                                <Text3 regular>English</Text3>
+                                <Text3 regular color="black">English</Text3>
                             </RadioButton>
                             </div>
                     
@@ -50,22 +52,27 @@ export default function UserStoryContent() {
                         alignItems: 'flex-end', 
                         marginInlineEnd: '24px'
                         }}>
-                        <ButtonPrimary 
+                        <Button 
+                            variant="outlined"
+                            // color=""
+                            disableElevation
                             style={{
                                  width: 150,
+                                 backgroundColor: '#2d516f',
+                                 padding: '10px',
                             //     display: 'flex', 
                             //     justifyContent: 'center',  
                             //     alignItems: 'center',
                             //     minHeight: '80px',
                             //     fontWeight: 'bold',
-                            //     color: 'white',
+                                 color: 'white',
                             //    // backgroundColor: buttonState.isCurrentlyActive ? selectedButtonColor : unselectedButtonColor
                             }} 
-                            onPress={() => console.log('submit story')}
-                            disabled={userStory.length == 0}
+                            onClick={() => console.log('submit story')}
+                            // disabled={userStory.length == 0}
                             >
                                 Submit Story
-                        </ButtonPrimary>
+                        </Button>
                     </div>
                 </div>    
             </Stack>

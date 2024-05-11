@@ -44,6 +44,17 @@ export default function EquivClassList(props: {methods: Method[], onRemove: any,
         setAvaliableMethods(props.methods)
     }, [props.methods])
 
+    function onRemove(methodId: any, eqClassId: any) {
+        props.onRemove(methodId, eqClassId)
+        setAvaliableMethods(ms => ms ? ms.map(m_ => {
+            console.log('m_', m_)
+            if (m_ && m_.identifier == methodId) {
+                m_.equivClasses = m_.equivClasses.filter(eqc => eqc.identifier != eqClassId)
+            }
+            return m_
+        }) : [])
+    }
+
     return (
         <div>
             <Box
@@ -82,7 +93,7 @@ export default function EquivClassList(props: {methods: Method[], onRemove: any,
                                                                 <Entry 
                                                                     key={ec.identifier}
                                                                     method={m.name} 
-                                                                    onRemove={() => props.onRemove(m.identifier, ec.identifier)}
+                                                                    onRemove={() => onRemove(m.identifier, ec.identifier)}
                                                                     openEdit={() => props.openEdit(m.identifier, ec.identifier)}
                                                                     equivClassName={ec.name} />))
             }

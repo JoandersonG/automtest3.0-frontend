@@ -1,48 +1,38 @@
-import { ButtonDanger, Form, FormValues, Stack, Text5 } from "@telefonica/mistica";
+import { Text5 } from "@telefonica/mistica";
 import { Method } from "../../models/Method";
-import { useEffect, useState } from "react";
-import Parameters from "./Parameters";
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, FormControl, Grid, InputLabel, MenuItem, Paper, Select, TextField, Typography } from "@mui/material";
+import { useState } from "react";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, FormControl, Grid, InputLabel, MenuItem, Select } from "@mui/material";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { Parameter } from "../../models/Parameter";
 import { v1 as uuidv1 } from 'uuid';
-import { DataType, DataTypes } from "../../models/DataType";
+import { DataTypes } from "../../models/DataType";
 import { buildTextField } from "../CustomComponents";
 
-export default function MethodCreateOrUpdate(props: {method?: Method, updateMethod : (updatedMethod: Method) => void, closeInsertMethods: () => void}) {
+export default function MethodCreateOrUpdate(props: {method?: Method, updateMethod : (updatedMethod: Method) => void, onClose: () => void}) {
+
+    console.log('MethodCreateOrUpdate.method:', props.method)
 
     const [packageName, setPackageName] = useState(props.method ? props.method.packageName : '');
     const [className, setClassName] = useState(props.method ? props.method.className : '');
     const [methodName, setMethodName] = useState(props.method ? props.method.name : '');
     const [returnType, setReturnType] = useState(props.method ? props.method.returnType : '');
-    const [parameters, setParameters] = useState<Parameter[]>(props.method ? props.method.parameters : [
-        {
-            identifier: 'abc',
-            name: 'age',
-            type: DataType.int
-        },
-        {
-            identifier: 'bcd',
-            name: 'name',
-            type: DataType.String
-        }])
-    
+    const [parameters, setParameters] = useState<Parameter[]>(props.method ? props.method.parameters : [])    
 
     function onSubmit() {
         
         //TODO: implement validations
 
         const updatedMethod: Method = {
-            identifier: uuidv1(),
+            identifier: props.method ? props.method.identifier : uuidv1(),
             packageName: packageName,
             name: methodName,
             returnType: returnType,
             parameters: parameters,
             className: className,
-            equivClasses: []
+            equivClasses: props.method ? props.method.equivClasses : []
         }
         props.updateMethod(updatedMethod)
-        props.closeInsertMethods()
+        props.onClose()
     }
 
     return (
@@ -99,9 +89,9 @@ export default function MethodCreateOrUpdate(props: {method?: Method, updateMeth
                                                     p.name = newVal
                                                     setParameters(parameters.map(param => param.identifier == p.identifier ? p : param))
                                                 }}
-                                                dataType={p.type ? DataType[p.type] : ''} 
+                                                dataType={p.type} 
                                                 onChangeDataType={(newVal: any) => {
-                                                    p.type = DataType[newVal as keyof typeof DataType]
+                                                    p.type = newVal
                                                     setParameters(parameters.map(param => param.identifier == p.identifier ? p : param))
                                                 }}
                                                 onClickRemove={() => setParameters(parameters.filter(ip => ip.identifier != p.identifier))} />
@@ -125,7 +115,7 @@ export default function MethodCreateOrUpdate(props: {method?: Method, updateMeth
             </Box>
             <Grid container justifyContent="flex-end" spacing={1} marginTop={1}>
                 <Grid item xs={2}>
-                    <Button variant="outlined" color="secondary" disableElevation fullWidth style={{height: '55px'}} onClick={props.closeInsertMethods}>Go back</Button>
+                    <Button variant="outlined" color="secondary" disableElevation fullWidth style={{height: '55px'}} onClick={props.onClose}>Go back</Button>
                 </Grid>
                 <Grid item xs={2}>
                     <Button variant="outlined" color="primary" disableElevation fullWidth style={{height: '55px'}} onClick={onSubmit}>Save</Button>

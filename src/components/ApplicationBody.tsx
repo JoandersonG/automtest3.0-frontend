@@ -234,12 +234,12 @@ export default function ApplicationBody() {
             showPage: () => <UserStoryContent />
         },{
             menuButton: MenuButton.METHOD_INFO,
-            isCurrentlyActive: false,
+            isCurrentlyActive: true,
             enabled: true,
-            showPage: () => <InsertMethodsInfoContent methods={methods}/>
+            showPage: () => <InsertMethodsInfoContent methods={methods} setMethods={setMethods} showEquivClassesList={() => selectButton(MenuButton.EQUIVALENCE_CLASS)}/>
         },{
             menuButton: MenuButton.EQUIVALENCE_CLASS,
-            isCurrentlyActive: true,
+            isCurrentlyActive: false,
             enabled: true,
             showPage: () => <EquivalenceClassesContent methods={methods} setMethods={setMethods}/>
         },{
@@ -260,6 +260,7 @@ export default function ApplicationBody() {
     }, [methods])
 
     function selectButton(button: MenuButton) {
+        console.log('selectButton ', button)
         const updated = menuButtons.map((bt: MenuButtonState) => {
             if (bt.menuButton == button){
                 bt.isCurrentlyActive = true

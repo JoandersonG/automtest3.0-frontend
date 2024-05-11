@@ -1,39 +1,69 @@
-import { useState } from "react"
-import UserStoryMethodsResult from "./UserStoryMethodsResult"
+import { useEffect, useState } from "react"
+import MethodList from "./MethodList"
 import { Method } from "../../models/Method"
-import MethodCreateOrUpdate from "./NewMethodCreation"
+import MethodCreateOrUpdate from "./MethodCreateOrUpdate"
 import { ContentType } from "./ContentType"
 import { v1 as uuidv1 } from 'uuid';
 
-export default function InsertMethodsInfoContent(props: {methods: Method[]}) {
+export default function InsertMethodsInfoContent(props: {methods: any, setMethods: any, showEquivClassesList: any}) {
 
-    function updateView(newContent: ContentType) {
+    const possibleViews = {
+        METHOD_LIST: 0,
+        CREATE_UPDATE_METHODS: 1,
+    }
+
+    const [currentView, setCurrentView] = useState(possibleViews.METHOD_LIST)
+    const [methodToUpdate, setMethodToUpdate] = useState<Method>();
+
+    const [methods, setMethods] = useState<Method[]>([]);
+
+    useEffect(() => {
+        setMethods(props.methods)
+    }, [props.methods])
+
+    function updateView(newContent: ContentType, methodToUpdateView?: Method) {
+        console.log('updateView', newContent, methodToUpdateView)
         if (newContent == ContentType.NEW_METHOD) {
-            setCurrentView(possibleViews.newMethodCreation)
+            setMethodToUpdate(methodToUpdateView)
+            setCurrentView(possibleViews.CREATE_UPDATE_METHODS)
+        } else if (newContent == ContentType.NEW_EQUIV_CLASS) {
+            setCurrentView(possibleViews.METHOD_LIST)
         }
     }
 
-    const [newMethod, setNewMethod] = useState<Method>( {
-        identifier: uuidv1(),
-        packageName: '',
-        name: '',
-        returnType: '',
-        parameters: [],
-        className: '',
-        equivClasses: []
-    })
+    function createOrUpdateMethod(newMethod: Method) {
+        const alreadyExists = methods.find((m: Method) => m.identifier == newMethod.identifier)
+        if (alreadyExists) {
+            props.setMethods((methods: Method[]) => methods.map(oldM => oldM.identifier == newMethod.identifier ? newMethod : oldM))
+            setMethods((methods: Method[]) => methods.map(oldM => oldM.identifier == newMethod.identifier ? newMethod : oldM))
+        } else {
+            props.setMethods((methods: Method[]) => [...methods, newMethod])
+            setMethods((methods: Method[]) => [...methods, newMethod])
+        }
+    }
 
-    const [possibleViews, setPossibleView] = useState({
-        userStoryResult: <UserStoryMethodsResult methods={props.methods} updateView={updateView} />,
-        //methodsList: <MethodsList methods={props.methods} />,
-        newMethodCreation: <MethodCreateOrUpdate updateMethod={setNewMethod} closeInsertMethods={() => setCurrentView(possibleViews.userStoryResult)}/>
-    })
-
-    const [currentView, setCurrentView] = useState(possibleViews.userStoryResult)
+    function removeMethod(methodId: string) {
+        props.setMethods((methods: Method[]) => methods.filter(m => m.identifier != methodId))
+        setMethods((methods: Method[]) => methods.filter(m => m.identifier != methodId))
+    }
 
     return (
         <div>
-            {currentView}
+            {
+                currentView == possibleViews.METHOD_LIST ?
+
+                    <MethodList methods={methods} removeMethod={removeMethod} updateView={updateView} showEquivClassesList={props.showEquivClassesList} />
+
+                : currentView == possibleViews.CREATE_UPDATE_METHODS ?
+
+                    <MethodCreateOrUpdate 
+                        method={methodToUpdate}
+                        updateMethod={(method: Method) => createOrUpdateMethod(method)}
+                        onClose={() => setCurrentView(possibleViews.METHOD_LIST)}/>
+                :
+
+                    <div></div>
+            }
         </div>
     )
 }

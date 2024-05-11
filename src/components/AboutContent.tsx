@@ -2,7 +2,7 @@ import { Stack } from "@telefonica/mistica";
 
 export default function AboutPage() {
     return (
-        <div style={{fontSize: '20px', textAlign: 'justify'}}>
+        <div style={{fontSize: '20px', textAlign: 'justify', color: 'black'}}>
             AutomTest is a Test-Driven Development (TDD) test case generator designed for Java,
              specifically tailored to generate unit tests prior to developing the necessary system methods.
             <br />
