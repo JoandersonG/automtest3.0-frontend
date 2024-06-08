@@ -6,7 +6,7 @@ import { DataRange } from "../../models/DataRange"
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Dayjs } from "dayjs"
+import dayjs, { Dayjs } from "dayjs"
 import DateChip from "./DateChip"
 import CharChip from "./CharChip"
 
@@ -28,18 +28,22 @@ export function BooleanRangeComponent(props: {range: DataRange, setRange: any, l
                 scrollbarWidth: 'thin', // This applies to Firefox
                 msOverflowStyle: 'none',  // This applies to Internet Explorer 10+
             }}>
-            <div style={{marginLeft: '12px', marginTop: '8px'}}>{props.label ? props.label : <Text3  regular color="black">Set the expected <span style={{ fontWeight: 'bold' }}>boolean</span> return value:</Text3>}</div>
-
-            <div style={{width: '110px'}}></div>
-                <Radio style={{color: 'black'}} value={'true'} checked={props.range.v1 != 'false'} onChange={(val) => props.setRange({...props.range, v1: val.target.value})} />
-                <div style={{width: '4px'}}></div>
-                <div style={{marginTop: '8px'}}><Text3  regular color="black">True</Text3></div>
-                <div style={{width: '40px'}}></div>
-                <Radio style={{color: 'black'}} value={'false'} checked={props.range.v1 == 'false'} onChange={(val) => props.setRange({...props.range, v1: val.target.value})}/>
-                <div style={{width: '4px'}}></div>
-                <div style={{marginTop: '8px'}}><Text3  regular color="black">False</Text3></div>
+                <div style={{marginLeft: '12px', marginTop: '8px', width: '450px'}}>
+                    {
+                        props.label ? props.label 
+                        : <Text3  regular color="black">Set the expected <span style={{ fontWeight: 'bold' }}>boolean</span> return value:</Text3>
+                    }
+                </div>
+                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                    <Radio style={{color: 'black'}} value={'true'} checked={props.range.v1 == 'true'} onChange={(val) => props.setRange({...props.range, v1: val.target.value})} />
+                    <div style={{width: '4px'}}></div>
+                    <Text3  regular color="black">True</Text3>
+                    <div style={{width: '4px'}}></div>
+                    <Radio style={{color: 'black'}} value={'false'} checked={props.range.v1 == 'false'} onChange={(val) => props.setRange({...props.range, v1: val.target.value})}/>
+                    <div style={{width: '4px'}}></div>
+                    <Text3  regular color="black">False</Text3>
+                </div>
             </div>
-
         </Box>
        
     )
@@ -65,8 +69,8 @@ export function CharRangeComponent(props: {range: DataRange, setRange: any, labe
     }
 
     function addChar() {
-        if (charValue != '' && !props.range.v1.includes('[' + charValue + ']')) {
-            props.setRange({...props.range, v1: props.range.v1 + '[' + charValue + ']'})
+        if (charValue != '' && !props.range.v1.includes(charValue)) {
+            props.setRange({...props.range, v1: props.range.v1 != '' ? (props.range.v1 + ';' + charValue) : charValue})
         }
         setCharValue('')
     }
@@ -110,26 +114,41 @@ export function DateRangeComponent(props: {range: DataRange, setRange: any, labe
     const [fromDate, setFromDate] = useState<Dayjs>();
     const [toDate, setToDate] = useState<Dayjs>();
 
+    useEffect(() => {
+        console.log('DateRangeComponent.props.range', props.range)
+        if (props.range.v1) {
+            const [day, month, year] = props.range.v1.split("-").map(Number);
+            const formattedDate = dayjs(`${year}-${month}-${day}`);
+            setFromDate(formattedDate);
+        }
+        if (props.range.v2) {
+            const [day, month, year] = props.range.v2.split("-").map(Number);
+            const formattedDate = dayjs(`${year}-${month}-${day}`);
+            setToDate(formattedDate);
+        }
+    }, [])
+
     const {openSnackbar} = useSnackbar();
 
     function updateRange(type: 'from' | 'to', value?: any) {
         //TODO: validações
         //openSnackbar({message: '"From" shloud be a date befor or equal to value in "To"', type: 'CRITICAL', buttonText: 'buttonText', withDismiss: true});
 
-
-        if (type == 'from') {
+        // console.log('updating date. type='+ type, ' value=', value)
+        if (type.trim() == 'from') {
             setFromDate(value)
-            props.setRange({...props.range, v1: fromDate?.format('YYYY-MM-DD')})
+            props.setRange({...props.range, v1: value.format('DD-MM-YYYY')})
         } else {
             setToDate(value)
-            props.setRange({...props.range, v2: toDate?.format('YYYY-MM-DD')})
+            props.setRange({...props.range, v2: value.format('DD-MM-YYYY')})
         }
         
     }
 
     function addDate() {
         if (alsoIncludeDate) {
-            props.setRange({...props.range, v3: props.range.v3 + '[' + alsoIncludeDate?.format('YYYY-MM-DD') + ']'})
+            props.setRange({...props.range, v3: props.range.v3 + ((props.range.v3 && props.range.v3 != '' ? ';' : '') + alsoIncludeDate?.format('DD-MM-YYYY'))})
+            console.log('addDate', props.range)
         }
     }
 
@@ -235,11 +254,11 @@ export function NumberRangeComponent(props: {type: 'INT' | 'DOUBLE' | 'FLOAT' | 
                 msOverflowStyle: 'none',  // This applies to Internet Explorer 10+
             }}>
 
-                {getTextInput('From', from, (newVal: any) => setFrom(newVal.target.value), 'Start of ' + getReturningType() + ' range')}
+                {getTextInput('From', props.range.v1, (newVal: any) => updateRange({...props.range, v1: newVal.target.value }), 'Start of ' + getReturningType() + ' range')}
                 <div style={{width: '8px'}}></div>
-                {getTextInput('To', props.range.v2, (newVal: any) => updateRange({...props.range, v2: newVal.target.value}), 'End of ' + getReturningType() + ' range')}
+                {getTextInput('To', props.range.v2, (newVal: any) => updateRange({...props.range, v2: newVal.target.value }), 'End of ' + getReturningType() + ' range')}
                 <div style={{width: '8px'}}></div>
-                {getTextInput('Also include', props.range.v3, (newVal: any) => updateRange({...props.range, v3: newVal.target.value}), 'Semicolon-separated ' + getReturningType() + ' numbers to include', true)}
+                {getTextInput('Also include', props.range.v3, (newVal: any) => updateRange({...props.range, v3: newVal.target.value }), 'Semicolon-separated ' + getReturningType() + ' numbers to include', true)}
 
             </div>
         </Box>

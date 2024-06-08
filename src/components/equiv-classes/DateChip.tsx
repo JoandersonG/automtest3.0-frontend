@@ -11,17 +11,18 @@ function DateChip(props: {range: DataRange, setRange: (newRange: DataRange) => v
   const [chips, setChips] = useState<{id: string, label: string}[]>([]);
   
     useEffect(() => {
-      let res = props.range.v3.split('][')
-      res = res.map(r => r.replaceAll('[', '').replaceAll(']',''))
+      console.log('novo valor', props.range.v3)
+      let res = props.range.v3.split(';')
+      res = res.filter(r => !(r == '')).map(r => r.split("-").reverse().join("-"))
       let result  = res.map(r => { return {id: r, label: r}})
       setChips((result.length == 1 && !result[0].id) ? [] : result)
     }, [props.range])
 
 
   const handleDelete = (chipToDelete: any) => () => {
-    const updatedRange = '[' + chips.filter(chip => chip.id !== chipToDelete.id).map(chip => chip.label).join('][') + ']'
-    console.log('updatedRange:', updatedRange)
-    props.setRange({...props.range, v3: updatedRange != '[]' ? updatedRange : ''})
+    const updatedRange = chips.filter(chip => chip.id !== chipToDelete.id).map(chip => chip.label).join(';')
+    console.log('updatedRange', updatedRange)
+    props.setRange({...props.range, v3: updatedRange})
   };
 
   return (

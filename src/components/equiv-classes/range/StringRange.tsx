@@ -16,7 +16,7 @@ export function StringRangeComponent(props: {range: DataRange, setRange: any, ad
         const convertedPieces = data.map((p: any) => {
             let content : string = p.type.value == 'manually_specify' ? p.content : p.type.value;
             content = '[' + (content ? content : '') + ']'
-            const quantity = '[1' + p.from + '~' + p.to + '2]'
+            const quantity = '[' + p.from + '~' + p.to + ']'
             //console.log('data.map.item', {content: content, quantity: quantity})
             return {content: content, quantity: quantity}
         })

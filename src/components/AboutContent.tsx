@@ -1,8 +1,24 @@
-import { Stack } from "@telefonica/mistica";
-
+// import path from 'path';
+// import { app } from 'electron';
+import logo_automtest from '../../assets/logo-automtest.png'
 export default function AboutPage() {
+
+    // const RESOURCES_PATH = app.isPackaged
+    // ? path.join(process.resourcesPath, 'assets')
+    // : path.join(__dirname, '../../assets');
+
+    // const getAssetPath = (...paths: string[]): string => {
+    //     return path.join(RESOURCES_PATH, ...paths);
+    // };
+
     return (
         <div style={{fontSize: '20px', textAlign: 'justify', color: 'black'}}>
+            <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                <img src={logo_automtest} alt="AutomTest logo" style={{width: '100px'}} />
+                <p style={{fontSize: '32px', fontWeight: 'bold', color: '#385075', fontFamily: 'monospace'}}>AutomTest</p>
+            </div>
+             
+             {/* {getAssetPath('logo-automtest.png')} */}
             AutomTest is a Test-Driven Development (TDD) test case generator designed for Java,
              specifically tailored to generate unit tests prior to developing the necessary system methods.
             <br />

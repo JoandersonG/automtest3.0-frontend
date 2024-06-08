@@ -1,10 +1,10 @@
 export const StringRangePieceType = [
     {value: 'manually_specify', text: 'Manually specify'},
-    {value: 'any_character', text: 'Any character'},
+    {value: 'any character', text: 'Any character'},
     {value: 'signs', text: 'Signs'},
     {value: 'numbers', text: 'Numbers'},
     {value: 'letters', text: 'Letters'},
-    {value: 'numbers_letters', text: 'Numbers/Letters'},
+    {value: 'alphanumeric', text: 'Numbers/Letters'},
 ]
 
 export type StringDataRangePiece = {

@@ -5,7 +5,7 @@ import EquivClassList from "./EquivClassList";
 import EquivClassCreateOrUpdate from "./EquivClassCreateOrUpdate";
 
 
-export default function EquivalenceClassesContent(props: {methods: Method[], setMethods: any}) {
+export default function EquivalenceClassesContent(props: {methods: Method[], setMethods: any, showGenerateTests: any}) {
 
     function removeEquivClass(method_id: string, eq_class_id: string) {
         props.setMethods((methods_: Method[]) => methods_.map(m_ => {
@@ -42,7 +42,9 @@ export default function EquivalenceClassesContent(props: {methods: Method[], set
                                 setIsCreateEquivClass(true)
                                 setCurrentEquivClass(undefined)
                                 setCurrentView(CREATE_UPDATE)
-                            }} />;
+                            }} 
+                            showGenerateTests={props.showGenerateTests}
+                        />;
     const equivClassCreateUpdate = <EquivClassCreateOrUpdate
                                     methodsAvaliable={props.methods} 
                                     isCreate={isCreateEquivClass} 

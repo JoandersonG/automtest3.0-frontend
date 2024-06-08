@@ -1,6 +1,6 @@
 import { TextField } from "@mui/material";
 
-export function buildTextField(label: any, value: string, onChange: any, smallSize?: boolean, disabled?: boolean) {
+export function buildTextField(label: any, value: string, onChange: any, smallSize?: boolean, disabled?: boolean, error?: boolean, helperText?: string) {
     if (smallSize) {
         return <TextField 
                     id="outlined-basic" 
@@ -18,25 +18,11 @@ export function buildTextField(label: any, value: string, onChange: any, smallSi
                           heightValue: 25, // Adjust height here
                           padding: '10px 3px', // Adjust padding here, format: 'top bottom'
                           fontSize: '13px',
-                          color: 'rgba(1, 1, 1, 0.5)',  // Custom color for label
+                          color: 'rgba(1, 1, 1, 1)',  // Custom color for label
                         },
-                        '& .MuiInputLabel-root': {
-                          '&.Mui-disabled': {
-                            color: 'rgba(1, 1, 1, 0.5)',  // Custom color for label
-                            borderColor: 'rgba(1, 1, 1, 0.5)',  // Custom color for label
-                            fontSize: '14px',
-                          }
-                        },
-                        '& .MuiOutlinedInput-root': {
-                          '&.Mui-disabled': {
-                            '& fieldset': {
-                              borderColor: 'rgba(1, 1, 1, 0.5)',  // Custom color for border
-                              color: 'rgba(1, 1, 1, 0.5)',  // Custom color for border
-                            },
-                            '& .MuiInputBase-input': {
-                              color: 'rgba(1, 1, 1, 0.5)'  // Custom color for the text
-                            }
-                          }
+                        '& .Mui-disabled': {
+                          color: 'rgba(1, 1, 1, 1)',
+                          WebkitTextFillColor: 'rgba(1, 1, 1, 1)'
                         },
                       }}
                     />
@@ -47,6 +33,8 @@ export function buildTextField(label: any, value: string, onChange: any, smallSi
                     variant="outlined" 
                     value={value ? value : ''} 
                     onChange={onChange}
+                    error={error}
+                    helperText={helperText ? helperText : ''}
                     fullWidth
                     style={{
                         marginBottom: '12px'

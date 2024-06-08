@@ -3,7 +3,6 @@ import MethodList from "./MethodList"
 import { Method } from "../../models/Method"
 import MethodCreateOrUpdate from "./MethodCreateOrUpdate"
 import { ContentType } from "./ContentType"
-import { v1 as uuidv1 } from 'uuid';
 
 export default function InsertMethodsInfoContent(props: {methods: any, setMethods: any, showEquivClassesList: any}) {
 
@@ -18,6 +17,7 @@ export default function InsertMethodsInfoContent(props: {methods: any, setMethod
     const [methods, setMethods] = useState<Method[]>([]);
 
     useEffect(() => {
+        console.log("InsertMethodsInfoContent.props.methods", props.methods)
         setMethods(props.methods)
     }, [props.methods])
 

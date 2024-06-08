@@ -73,7 +73,7 @@ const createWindow = async () => {
     show: false,
     width: 1024,
     height: 700,
-    icon: getAssetPath('icon.png'),
+    icon: getAssetPath('logo-automtest.png'),
     webPreferences: {
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
@@ -106,6 +106,29 @@ const createWindow = async () => {
     shell.openExternal(edata.url);
     return { action: 'deny' };
   });
+
+
+//in you main process:-
+
+const electron = require('electron');
+
+const ipcMain = electron.ipcMain;
+
+const dialog = electron.dialog;
+
+//hold the array of directory paths selected by user
+
+let dir;
+
+ipcMain.on('selectDirectory', function() {
+
+    dir = dialog.showOpenDialog(mainWindow!, {
+
+        properties: ['openDirectory']
+
+    });
+
+});
 
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line

@@ -7,7 +7,7 @@ function ParamChip(props: {parameters: Parameter[]}) {
   return(
     <Grid container spacing={0.5} marginRight={'16px'} style={{paddingRight: '16px'}}>
       {
-        props.parameters.map(p => {
+        props.parameters?.map(p => {
           return <Grid item key={p.identifier}>
           <Chip
             key={p.identifier}

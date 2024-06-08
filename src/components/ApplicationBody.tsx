@@ -7,6 +7,7 @@ import InsertMethodsInfoContent from "./insert-methods-info/InsertMethodsInfoCon
 import { Method } from "../models/Method";
 import { DataType } from "../models/DataType";
 import EquivalenceClassesContent from "./equiv-classes/EquivalenceClassesContent";
+import GenerateTestsContent from "./GenerateTestsContent";
 
 export default function ApplicationBody() {
 
@@ -20,233 +21,230 @@ export default function ApplicationBody() {
     //     }
     // }
     //menuButtons['ABOUT'] ? 
-    const [methods, setMethods] = useState<Method[]>([
-        {
-            identifier: '1',
-            name: 'isMinorAge',
-            className: 'AgeManager',
-            returnType: 'string',
-            equivClasses: [{
-                identifier: '1',
-                name: 'minorAge',
-                numberOfCases: 10,
-                expectedOutputRange: {
-                    v1: '[abc123][numbers][letters]',
-                    v2: '[1~2][2~3][3~4]',
-                    v3: ''
-                },
-                acceptableParamRanges: [{
-                    param_id: '1',
-                    v1: '[numbers][letters]',
-                    v2: '[2~6][3~8]',
-                    v3: ''
-                }]
-            }, {
-                identifier: '2',
-                name: 'minorAge',
-                numberOfCases: 10,
-                expectedOutputRange: {
-                    v1: '[joand][numbers][letters]',
-                    v2: '[1~2][2~3][3~4]',
-                    v3: ''
-                },
-                acceptableParamRanges: [{
-                    param_id: '1',
-                    v1: '[[joand][letters]',
-                    v2: '[2~6][3~8]',
-                    v3: ''
-                }]
-            }],
-            parameters: [
-                {
-                    identifier: '1',
-                    name: 'age',
-                    type: 'int'
-                }, {
-                    identifier: '2',
-                    name: 'name',
-                    type: 'string'
-                }
-            ]
-        }, {
-            identifier: '2',
-            name: 'anotherMethod2',
-            className: 'AgeManager',
-            returnType: 'int',
-            equivClasses: [],
-            parameters: [
-                {
-                    identifier: '2',
-                    name: 'month',
-                    type: 'int'
-                }, {
-                    identifier: '3',
-                    name: 'year',
-                    type: 'int'
-                }, {
-                    identifier: '4',
-                    name: 'nameOfGroup',
-                    type: 'string'
-                }
-            ]
-        }, {
-            identifier: '3',
-            name: 'anotherMethod3',
-            className: 'AgeManager',
-            returnType: 'float',
-            equivClasses: [],
-            parameters: [
-                {
-                    identifier: '1',
-                    name: 'month',
-                    type: 'int'
-                }, {
-                    identifier: '2',
-                    name: 'year',
-                    type: 'int'
-                }, {
-                    identifier: '3',
-                    name: 'nameOfGroup',
-                    type: 'string'
-                }
-            ]
-        }, {
-            identifier: '4',
-            name: 'anotherMethod4',
-            className: 'AgeManager',
-            returnType: 'boolean',
-            equivClasses: [],
-            parameters: [
-                {
-                    identifier: '1',
-                    name: 'month',
-                    type: 'int'
-                }, {
-                    identifier: '2',
-                    name: 'year',
-                    type: 'int'
-                }, {
-                    identifier: '3',
-                    name: 'nameOfGroup',
-                    type: 'string'
-                }
-            ]
-        }, {
-            identifier: '5',
-            name: 'anotherMethod5',
-            className: 'AgeManager',
-            returnType: 'date',
-            equivClasses: [],
-            parameters: [
-                {
-                    identifier: '1',
-                    name: 'month',
-                    type: 'int'
-                }, {
-                    identifier: '2',
-                    name: 'year',
-                    type: 'int'
-                }, {
-                    identifier: '3',
-                    name: 'nameOfGroup',
-                    type: 'string'
-                }, {
-                    identifier: '4',
-                    name: 'nameOfGroup',
-                    type: 'string'
-                }, {
-                    identifier: '5',
-                    name: 'nameOfGroup',
-                    type: 'string'
-                }
-            ]
-        }, {
-            identifier: '6',
-            name: 'anotherMethod6',
-            className: 'AgeManager',
-            returnType: 'double',
-            equivClasses: [],
-            parameters: [
-                {
-                    identifier: '1',
-                    name: 'month',
-                    type: 'int'
-                }, {
-                    identifier: '2',
-                    name: 'year',
-                    type: 'int'
-                }, {
-                    identifier: '3',
-                    name: 'nameOfGroup',
-                    type: 'string'
-                }, {
-                    identifier: '4',
-                    name: 'nameOfGroup',
-                    type: 'string'
-                }, {
-                    identifier: '5',
-                    name: 'nameOfGroup',
-                    type: 'string'
-                }
-            ]
-        }, {
-            identifier: '7',
-            name: 'anotherMethod7',
-            className: 'AgeManager',
-            returnType: 'char',
-            equivClasses: [],
-            parameters: [
-                {
-                    identifier: '1',
-                    name: 'month',
-                    type: 'int'
-                }, {
-                    identifier: '2',
-                    name: 'year',
-                    type: 'int'
-                }, {
-                    identifier: '3',
-                    name: 'nameOfGroup',
-                    type: 'string'
-                }, {
-                    identifier: '4',
-                    name: 'nameOfGroup',
-                    type: 'string'
-                }, {
-                    identifier: '5',
-                    name: 'nameOfGroup',
-                    type: 'string'
-                }
-            ]
-        }
-    ])
+    const [methods, setMethods] = useState<Method[]>([]);
+    const [userStory, setUserStory] = useState('');
+    const [directory, setDirectory] = useState('');
+    //     {
+    //         identifier: '1',
+    //         name: 'isMinorAge',
+    //         className: 'AgeManager',
+    //         returnType: 'string',
+    //         equivClasses: [{
+    //             identifier: '1',
+    //             name: 'minorAge',
+    //             numberOfCases: 10,
+    //             expectedOutputRange: {
+    //                 v1: '[abc123][numbers][letters]',
+    //                 v2: '[1~2][2~3][3~4]',
+    //                 v3: ''
+    //             },
+    //             acceptableParamRanges: [{
+    //                 param_id: '1',
+    //                 v1: '[numbers][letters]',
+    //                 v2: '[2~6][3~8]',
+    //                 v3: ''
+    //             }]
+    //         }, {
+    //             identifier: '2',
+    //             name: 'minorAge',
+    //             numberOfCases: 10,
+    //             expectedOutputRange: {
+    //                 v1: '[joand][numbers][letters]',
+    //                 v2: '[1~2][2~3][3~4]',
+    //                 v3: ''
+    //             },
+    //             acceptableParamRanges: [{
+    //                 param_id: '1',
+    //                 v1: '[[joand][letters]',
+    //                 v2: '[2~6][3~8]',
+    //                 v3: ''
+    //             }]
+    //         }],
+    //         parameters: [
+    //             {
+    //                 identifier: '1',
+    //                 name: 'age',
+    //                 type: 'int'
+    //             }, {
+    //                 identifier: '2',
+    //                 name: 'name',
+    //                 type: 'string'
+    //             }
+    //         ]
+    //     }, {
+    //         identifier: '2',
+    //         name: 'anotherMethod2',
+    //         className: 'AgeManager',
+    //         returnType: 'int',
+    //         equivClasses: [],
+    //         parameters: [
+    //             {
+    //                 identifier: '2',
+    //                 name: 'month',
+    //                 type: 'int'
+    //             }, {
+    //                 identifier: '3',
+    //                 name: 'year',
+    //                 type: 'int'
+    //             }, {
+    //                 identifier: '4',
+    //                 name: 'nameOfGroup',
+    //                 type: 'string'
+    //             }
+    //         ]
+    //     }, {
+    //         identifier: '3',
+    //         name: 'anotherMethod3',
+    //         className: 'AgeManager',
+    //         returnType: 'float',
+    //         equivClasses: [],
+    //         parameters: [
+    //             {
+    //                 identifier: '1',
+    //                 name: 'month',
+    //                 type: 'int'
+    //             }, {
+    //                 identifier: '2',
+    //                 name: 'year',
+    //                 type: 'int'
+    //             }, {
+    //                 identifier: '3',
+    //                 name: 'nameOfGroup',
+    //                 type: 'string'
+    //             }
+    //         ]
+    //     }, {
+    //         identifier: '4',
+    //         name: 'anotherMethod4',
+    //         className: 'AgeManager',
+    //         returnType: 'boolean',
+    //         equivClasses: [],
+    //         parameters: [
+    //             {
+    //                 identifier: '1',
+    //                 name: 'month',
+    //                 type: 'int'
+    //             }, {
+    //                 identifier: '2',
+    //                 name: 'year',
+    //                 type: 'int'
+    //             }, {
+    //                 identifier: '3',
+    //                 name: 'nameOfGroup',
+    //                 type: 'string'
+    //             }
+    //         ]
+    //     }, {
+    //         identifier: '5',
+    //         name: 'anotherMethod5',
+    //         className: 'AgeManager',
+    //         returnType: 'date',
+    //         equivClasses: [],
+    //         parameters: [
+    //             {
+    //                 identifier: '1',
+    //                 name: 'month',
+    //                 type: 'int'
+    //             }, {
+    //                 identifier: '2',
+    //                 name: 'year',
+    //                 type: 'int'
+    //             }, {
+    //                 identifier: '3',
+    //                 name: 'nameOfGroup',
+    //                 type: 'string'
+    //             }, {
+    //                 identifier: '4',
+    //                 name: 'nameOfGroup',
+    //                 type: 'string'
+    //             }, {
+    //                 identifier: '5',
+    //                 name: 'nameOfGroup',
+    //                 type: 'string'
+    //             }
+    //         ]
+    //     }, {
+    //         identifier: '6',
+    //         name: 'anotherMethod6',
+    //         className: 'AgeManager',
+    //         returnType: 'double',
+    //         equivClasses: [],
+    //         parameters: [
+    //             {
+    //                 identifier: '1',
+    //                 name: 'month',
+    //                 type: 'int'
+    //             }, {
+    //                 identifier: '2',
+    //                 name: 'year',
+    //                 type: 'int'
+    //             }, {
+    //                 identifier: '3',
+    //                 name: 'nameOfGroup',
+    //                 type: 'string'
+    //             }, {
+    //                 identifier: '4',
+    //                 name: 'nameOfGroup',
+    //                 type: 'string'
+    //             }, {
+    //                 identifier: '5',
+    //                 name: 'nameOfGroup',
+    //                 type: 'string'
+    //             }
+    //         ]
+    //     }, {
+    //         identifier: '7',
+    //         name: 'anotherMethod7',
+    //         className: 'AgeManager',
+    //         returnType: 'char',
+    //         equivClasses: [],
+    //         parameters: [
+    //             {
+    //                 identifier: '1',
+    //                 name: 'month',
+    //                 type: 'int'
+    //             }, {
+    //                 identifier: '2',
+    //                 name: 'year',
+    //                 type: 'int'
+    //             }, {
+    //                 identifier: '3',
+    //                 name: 'nameOfGroup',
+    //                 type: 'string'
+    //             }, {
+    //                 identifier: '4',
+    //                 name: 'nameOfGroup',
+    //                 type: 'string'
+    //             }, {
+    //                 identifier: '5',
+    //                 name: 'nameOfGroup',
+    //                 type: 'string'
+    //             }
+    //         ]
+    //     }
+    // ])
     
     const [menuButtons, setMenuButtons] = useState<MenuButtonState[]>([
         {
             menuButton: MenuButton.ABOUT,
-            isCurrentlyActive: false,
-            enabled: true,
-            showPage: () => <AboutPage />
+            isCurrentlyActive: true,
+            enabled: true
         },{
             menuButton: MenuButton.USER_STORY,
             isCurrentlyActive: false,
-            enabled: true,
-            showPage: () => <UserStoryContent />
+            enabled: true
         },{
             menuButton: MenuButton.METHOD_INFO,
-            isCurrentlyActive: true,
-            enabled: true,
-            showPage: () => <InsertMethodsInfoContent methods={methods} setMethods={setMethods} showEquivClassesList={() => selectButton(MenuButton.EQUIVALENCE_CLASS)}/>
+            isCurrentlyActive: false,
+            enabled: true
         },{
             menuButton: MenuButton.EQUIVALENCE_CLASS,
             isCurrentlyActive: false,
-            enabled: true,
-            showPage: () => <EquivalenceClassesContent methods={methods} setMethods={setMethods}/>
+            enabled: true
         },{
             menuButton: MenuButton.GENERATE_TEST,
             isCurrentlyActive: false,
-            enabled: false,
-            showPage: () => <div>Generate Test</div>
+            enabled: true
         },
     ]) 
 
@@ -271,7 +269,10 @@ export default function ApplicationBody() {
         });
         //console.log('updated selected button')
         setMenuButtons(updated)
+        setSelectedMenuOption(button)
     }
+
+    const [selectedMenuOption, setSelectedMenuOption] = useState<MenuButton>(MenuButton.ABOUT)
 
     // const [currentActivePage, setCurrentActivePage] = useState<any>()
 
@@ -300,7 +301,17 @@ export default function ApplicationBody() {
              }}>
             <ApplicationMenu buttonsState={menuButtons} selectButton={selectButton}/>
             <div style={{marginInlineStart: '24px', width: '100%'}}>
-                {menuButtons.filter((m: MenuButtonState) => m.isCurrentlyActive)[0].showPage()}
+                {
+                    selectedMenuOption == MenuButton.ABOUT ?
+                        <AboutPage />
+                    : selectedMenuOption == MenuButton.USER_STORY ?
+                        <UserStoryContent userStory={userStory} setUserStory={setUserStory} setMethods={setMethods} showMethodsListContent={() => selectButton(MenuButton.METHOD_INFO)} />
+                    : selectedMenuOption == MenuButton.METHOD_INFO ?
+                        <InsertMethodsInfoContent methods={methods} setMethods={setMethods} showEquivClassesList={() => selectButton(MenuButton.EQUIVALENCE_CLASS)}/>
+                    : selectedMenuOption == MenuButton.EQUIVALENCE_CLASS ?
+                        <EquivalenceClassesContent methods={methods} setMethods={setMethods} showGenerateTests={() => selectButton(MenuButton.GENERATE_TEST)}/>
+                    : <GenerateTestsContent directory={directory} setDirectory={setDirectory} methods={methods}/>
+                }
             </div>
         </div>
         </>

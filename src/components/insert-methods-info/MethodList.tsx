@@ -4,6 +4,7 @@ import MethodDetails from "./MethodDetails";
 import { ContentType } from "./ContentType";
 import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
+import ValidationErrorSnackbar from "../ValidationErrorComponent";
 
 export default function MethodList(props: {
         methods: Method[], 
@@ -16,6 +17,9 @@ export default function MethodList(props: {
     const non_empty_methods = "Manage the signatures of each method and continue once you are done:";
 
     const [methods, setMethods] = useState<Method[]>([])
+    const [showValidationError, setShowValidationError] = useState(false);
+    const [validationErrorMsg, setValidationErrorMsg] = useState('');
+
 
     useEffect(() => {
         if (props.methods) {
@@ -29,12 +33,32 @@ export default function MethodList(props: {
         props.removeMethod(methodId)
     }
 
+    function onSubmit() {
+        const method = methods.find(m => 
+                                !m.className 
+                                || !m.name 
+                                || !m.returnType 
+                                || !m.parameters 
+                                || m.parameters.length == 0
+                                || m.parameters.find(p => !p.name || !p.type))
+        if (methods.length == 0) {
+            setShowValidationError(true);
+            setValidationErrorMsg('Please provide at least one method')
+        } else if (method) {
+            setShowValidationError(true);
+            setValidationErrorMsg('Please provide all the required fields for "' + method.name + '"')
+        } else {
+            props.showEquivClassesList();
+        }
+    }
+
     return (
         <div>
+            <ValidationErrorSnackbar open={showValidationError} message={validationErrorMsg} changeOpenState={() => setShowValidationError(!showValidationError)} />
             <Stack space={12}>
                 <Text5 color="black">{methods.length == 0 ? empty_methods : non_empty_methods}</Text5>
                 <div style={{
-                    height: '470px',
+                    height: '460px',
                     overflowY: 'auto',
                     // backgroundColor: 'red'
                 }}>
@@ -60,13 +84,13 @@ export default function MethodList(props: {
                     </Button>
                 </div>
 
-                <BottomButtons showEquivClassesList={props.showEquivClassesList}/>
+                <BottomButtons onSubmit={onSubmit} />
             </Stack>
         </div>
     )
 }
 
-function BottomButtons(props: {showEquivClassesList: any}) {
+function BottomButtons(props: {onSubmit: any}) {
     return <div style={{
         marginInlineStart: '24px',
         width: '100%',
@@ -95,7 +119,7 @@ function BottomButtons(props: {showEquivClassesList: any}) {
                 marginRight: '24px',
                 height: '55px'
             }}
-            onClick={props.showEquivClassesList}>
+            onClick={props.onSubmit}>
                 Continue With Selected Methods
         </Button>
         

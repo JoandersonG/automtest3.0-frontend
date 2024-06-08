@@ -7,6 +7,7 @@ import { Parameter } from "../../models/Parameter";
 import { v1 as uuidv1 } from 'uuid';
 import { DataTypes } from "../../models/DataType";
 import { buildTextField } from "../CustomComponents";
+import ValidationErrorSnackbar from "../ValidationErrorComponent";
 
 export default function MethodCreateOrUpdate(props: {method?: Method, updateMethod : (updatedMethod: Method) => void, onClose: () => void}) {
 
@@ -18,25 +19,64 @@ export default function MethodCreateOrUpdate(props: {method?: Method, updateMeth
     const [returnType, setReturnType] = useState(props.method ? props.method.returnType : '');
     const [parameters, setParameters] = useState<Parameter[]>(props.method ? props.method.parameters : [])    
 
-    function onSubmit() {
-        
-        //TODO: implement validations
+    const [showValidationError, setShowValidationError] = useState(false);
+    const [validationErrorMsg, setValidationErrorMsg] = useState('');
 
-        const updatedMethod: Method = {
-            identifier: props.method ? props.method.identifier : uuidv1(),
-            packageName: packageName,
-            name: methodName,
-            returnType: returnType,
-            parameters: parameters,
-            className: className,
-            equivClasses: props.method ? props.method.equivClasses : []
+    function onSubmit() {
+        if (
+            !className 
+            || className == ''
+            ||  !(/^[a-zA-Z_][a-zA-Z0-9_]+$/.test(className))
+        ) {
+            setShowValidationError(true);
+            setValidationErrorMsg('Please provide a valid class name')
+        }else if (
+            !methodName 
+            || methodName == ''
+            ||  !(/^[a-zA-Z_][a-zA-Z0-9_]+$/.test(methodName))
+        ) {
+            setShowValidationError(true);
+            setValidationErrorMsg('Please provide a valid method name')
+        } else if (
+            !returnType 
+            || returnType == ''
+        ) {
+            setShowValidationError(true);
+            setValidationErrorMsg('Please provide a valid return type')
+        } else if (
+            parameters.length == 0
+        ) {
+            setShowValidationError(true);
+            setValidationErrorMsg('Please provide parameters for the method')
+        } else {
+
+            const invalidParam = parameters.find(p => !(/^[a-zA-Z_][a-zA-Z0-9_]+$/.test(p.name)) || !p.type)
+            if (invalidParam) {
+                setShowValidationError(true);
+                setValidationErrorMsg('Please correct the parameter ' + invalidParam.name + '(' + invalidParam.type + ')')
+                return;
+            }
+            
+
+            //End of validation
+
+            const updatedMethod: Method = {
+                identifier: props.method ? props.method.identifier : uuidv1(),
+                packageName: packageName,
+                name: methodName,
+                returnType: returnType,
+                parameters: parameters,
+                className: className,
+                equivClasses: props.method ? props.method.equivClasses : []
+            }
+            props.updateMethod(updatedMethod)
+            props.onClose()
         }
-        props.updateMethod(updatedMethod)
-        props.onClose()
     }
 
     return (
         <div>
+            <ValidationErrorSnackbar open={showValidationError} message={validationErrorMsg} changeOpenState={() => setShowValidationError(!showValidationError)} />
             <Box
                 sx={{
                 height: 500,

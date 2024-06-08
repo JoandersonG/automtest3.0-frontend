@@ -12,8 +12,7 @@ export enum MenuButton {
 export type MenuButtonState = {
     menuButton: MenuButton,
     enabled: boolean,
-    isCurrentlyActive: boolean,
-    showPage: any
+    isCurrentlyActive: boolean
 }
 
 

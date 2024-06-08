@@ -1,6 +1,6 @@
 export const DataTypes = [
     {text: 'int', value: 'int'},
-    {text: 'String', value: 'string'},
+    {text: 'String', value: 'String'},
     {text: 'float', value: 'float'},
     {text: 'double', value: 'double'},
     {text: 'boolean', value: 'boolean'},

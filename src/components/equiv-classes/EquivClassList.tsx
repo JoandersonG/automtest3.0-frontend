@@ -2,25 +2,33 @@ import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Grid, TextF
 import { Stack, Text5 } from "@telefonica/mistica";
 import { Method } from "../../models/Method";
 import { useEffect, useState } from "react";
+import ValidationErrorSnackbar from "../ValidationErrorComponent";
 
 const helpText = 
-    <div>
+    <div style={{fontSize: '18px'}}>
         Here, an equivalence class is a tuple of a set of methods parameters and a set of possible return values for those parameters.<br/>
         <br/>
         Observe the following example:
         <br/>
-        The method isMaiorDeIdade(inteiro idade), which has as responsibility check whether a person's of legal age, returns true in case the provided age is greater tha or equal to 18 years-old and false otherwise. For that example,  we could define two equivalence classes: 
+        <br/>
+        The method <span style={{fontWeight: 'bold'}}>isMaiorDeIdade(inteiro idade)</span>, which has as responsibility check whether a person's of legal age, 
+        returns true in case the provided age is greater tha or equal to 18 years-old and false otherwise.
+        <br/>
+        For that example,  we could define two equivalence classes: 
+        <br/>
         <br/>
         1. The class of legal age people, with return value true and, in the parameters set 18 and 65.<br/>
         2. The class of minor age people, with return value false and, as parameter set, 0, 1, 15 and 17, for
         example.<br/>
-        3. The class of invalid input, with return value false and parameters -1, -2, 200, 50000.<br/><br/>
-            
-        With those info, it's possible to define an equivalence class.<br/>
-        Now it's your your turn: insert the equivalence classes you decide relevant to each previously mapped
-        method.
-
-
+        3. The class of invalid input, with return value false and parameters -1, -2, 200, 50000.
+        <br/>
+        <br/>
+        Note that the chosen numbers for the equivalence class is made by the user. You can make your own choices on the method's parameters and return value ranges.
+        <br/>
+        With those info, it's possible to define an equivalence class.
+        <br/>
+        <br/>
+        Now it's your your turn: insert the equivalence classes you decide relevant to each previously mapped method.
     </div>
 
 `Here, an equivalence class is a tuple of a set of methods parameters and a set of possible return values for those parameters.
@@ -35,9 +43,13 @@ example.
 With those info, it's possible to define an equivalence class.
 Now it's your your turn: insert the equivalence classes you decide relevant to each previously mapped
 method.`
-export default function EquivClassList(props: {methods: Method[], onRemove: any, showCreateContent: any, openEdit: any}) {
+export default function EquivClassList(props: {methods: Method[], onRemove: any, showCreateContent: any, openEdit: any, showGenerateTests: any}) {
 
     const [avaliableMethods, setAvaliableMethods] = useState<Method[]>()
+    const [showHelp, setShowHelp] = useState(false);
+
+    const [showValidationError, setShowValidationError] = useState(false);
+    const [validationErrorMsg, setValidationErrorMsg] = useState('');
 
     useEffect(() => {
         console.log('EquivClassList>methods updated to', props.methods)
@@ -55,24 +67,35 @@ export default function EquivClassList(props: {methods: Method[], onRemove: any,
         }) : [])
     }
 
+    function onSubmit() {
+        if (props.methods.find(m => m.equivClasses.length > 0)) {
+            props.showGenerateTests();
+        } else {
+            setShowValidationError(true);
+            setValidationErrorMsg('Please provide at least one Equivalence Class')
+        }
+    }
+
     return (
         <div>
+            <ValidationErrorSnackbar open={showValidationError} message={validationErrorMsg} changeOpenState={() => setShowValidationError(!showValidationError)} />
             <Box
                 sx={{
-                    height: 475,
+                    height: 497,
                     overflow: 'auto',
                     paddingRight: '16px',
-                    marginTop: '16px'
+                    // marginTop: '16px'
                 }}
             >
 
             <Accordion 
                 elevation={0}
+                expanded={showHelp}
                 style={{
                     borderRadius: 5,
                     //border: '1px solid #000',
                     backgroundColor: 'transparent',
-                    marginTop: '12px',
+                    // marginTop: '12px',
                     minHeight: '55px'
                 }}>
                 <AccordionSummary
@@ -80,7 +103,17 @@ export default function EquivClassList(props: {methods: Method[], onRemove: any,
                     aria-controls="panel1-content">
                 <Grid container justifyContent="flex-end" spacing={1}>
                     <Grid item xs={9}><Text5 color="black">List of all Equivalence Classes created:</Text5></Grid>
-                    <Grid item xs={3}><Button variant="contained" color="info" disableElevation fullWidth style={{height: '35px'}} onClick={() => 1}>Show Help</Button></Grid>
+                    <Grid item xs={3}>
+                        <Button 
+                            variant="outlined" 
+                            color="info" 
+                            disableElevation 
+                            fullWidth 
+                            style={{height: '35px'}} 
+                            onClick={() => setShowHelp(!showHelp)}>
+                                {showHelp ? 'Hide Help' : 'Show Help'}
+                        </Button>
+                    </Grid>
                 </Grid>
                 </AccordionSummary>
                 <AccordionDetails>
@@ -108,7 +141,7 @@ export default function EquivClassList(props: {methods: Method[], onRemove: any,
                 <Button variant="outlined" color="success" disableElevation fullWidth style={{height: '55px'}} onClick={props.showCreateContent}>Add Equivalence Class</Button>
             </Grid>
             <Grid item xs={3}>
-                <Button variant="outlined" color="primary" disableElevation fullWidth style={{height: '55px'}} onClick={() => 1}>Continue to generate tests</Button>
+                <Button variant="outlined" color="primary" disableElevation fullWidth style={{height: '55px'}} onClick={onSubmit}>Continue to generate tests</Button>
             </Grid>
         </Grid>
         </div>

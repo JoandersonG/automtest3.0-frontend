@@ -19,7 +19,7 @@ export default function MethodDetails(props: {method: Method, onRemove: (methodI
             borderRadius: '5px',
             }}>
                 <div style={{
-                        // backgroundColor: 'red',
+                        //backgroundColor: 'red',
                         padding: '12px',
                         borderRadius: '5px',
                         margin: '8px',
@@ -32,14 +32,14 @@ export default function MethodDetails(props: {method: Method, onRemove: (methodI
                     }}
                     onClick={() => setChecked(!checked)}
                 >
-                    <div>
+                    <div style={{width: '100%'}}>
                         <div style={{
                             // backgroundColor: 'lightblue',
                             // padding: '12px',
                             paddingRight: '0px',
                             paddingTop: '0px',
                             display: 'flex',
-                            width: '600px',
+                            width: '100%',
                             alignItems: 'center',
                             borderRadius: '5px',
                         }}>
@@ -61,11 +61,11 @@ export default function MethodDetails(props: {method: Method, onRemove: (methodI
                                     Remove
                             </Button>
                         </div>
-                        <Grid container spacing={1} style={{width: '608px', marginTop: '6px'}}>
-                            <Grid item  style={{width: '408px'}}>
+                        <Grid container spacing={1} style={{width: '101%', marginTop: '6px'}}>
+                            <Grid item  style={{width: '60%'}}>
                                 {buildTextField("Class", props.method.className, (v: any) => 1, true, true)}
                             </Grid>
-                            <Grid item style={{width: '200px'}}>
+                            <Grid item style={{width: '40%'}}>
                                 {buildTextField("Return type", props.method.returnType, (v: any) => 1, true, true)}
                             </Grid>
                         </Grid>
