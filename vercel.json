@@ -1,0 +1,15 @@
+{
+    "builds": [
+      {
+        "src": "src/main/",
+        "use": "@vercel/static-build",
+        "config": { "outputDirectory": "public" }
+      }
+    ],
+    "rewrites": [
+
+        { "source": "/(.*)", "destination": "/src/main/" }
+
+    ]
+}
+  
