@@ -276,9 +276,9 @@ export default function EquivClassCreateOrUpdate(props: {methodsAvaliable: Metho
                             
                             } else if ((currentMethod.returnType.toLowerCase() == 'double' || currentMethod.returnType.toLowerCase() == 'float')
                                         && !(
-                                                /^[0-9]+(\.[0-9]+){0,1}$/.test(returnValue.v1)
-                                                && /^[0-9]+(\.[0-9]+){0,1}$/.test(returnValue.v2)
-                                                && /^[0-9]+(\.[0-9]+){0,1}|(([0-9]+(\.[0-9]+){0,1}){0,1}(;[0-9]+(\.[0-9]+){0,1})*)$/.test(returnValue.v3)
+                                                /^(-){0,1}[0-9]+(\.[0-9]+){0,1}$/.test(returnValue.v1)
+                                                && /^(-){0,1}[0-9]+(\.[0-9]+){0,1}$/.test(returnValue.v2)
+                                                && /^((-){0,1}[0-9]+(\.[0-9]+){0,1}(;(-){0,1}[0-9]+(\.[0-9]+){0,1})*){0,1}$/.test(returnValue.v3)
                                                 && parseFloat(returnValue.v1) <= parseFloat(returnValue.v2)
                                             )
                             ) {
@@ -288,9 +288,9 @@ export default function EquivClassCreateOrUpdate(props: {methodsAvaliable: Metho
                             
                             } else if (currentMethod.returnType.toLowerCase().includes('int')
                                         && !(
-                                                /^[0-9]+$/.test(returnValue.v1)
-                                                && /^[0-9]+$/.test(returnValue.v2)
-                                                && /^([0-9]+(;[0-9]+)*)$/.test(returnValue.v3)
+                                                /^(-){0,1}[0-9]+$/.test(returnValue.v1)
+                                                && /^(-){0,1}[0-9]+$/.test(returnValue.v2)
+                                                && /^((-){0,1}[0-9]+(;(-){0,1}[0-9]+)*){0,1}$/.test(returnValue.v3)
                                                 && parseInt(returnValue.v1) <= parseInt(returnValue.v2)
                                             )
                             ) {
