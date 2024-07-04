@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Method } from "../models/Method";
 import { ProgrammingLanguages } from "../models/ProgrammingLanguages";
 import { buildTextField } from "./CustomComponents";
-import { Button, Select, MenuItem } from "@mui/material";
+import { Button, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 import axios from "axios";
 import { v1 as uuidv1 } from 'uuid';
 import ValidationErrorSnackbar from "./ValidationErrorComponent";
@@ -14,7 +14,7 @@ export default function GenerateTestsContent(props: {methods: Method[], director
     const [showError, setShowError] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
     const [genResult, setGenResult] = useState('');
-    const [programmingLanguage, setprogrammingLanguage] = useState("java")
+    const [programmingLanguage, setprogrammingLanguage] = useState("")
 
     function validateAndSendReq() {
         setErrorMsg('');
@@ -60,19 +60,21 @@ export default function GenerateTestsContent(props: {methods: Method[], director
                     {buildTextField("Directory", props.directory, (v: any) => props.setDirectory(v.target.value), false, false, showError, errorMsg)}
                 </div>
                 <div>
-                    <Select
-                     id="outlined-basic"
-                     variant="outlined" 
-                     value={programmingLanguage}
-                     label="Programming language"                    
-                     onChange={val => setprogrammingLanguage(val.target.value)}>
-                    {
-                        ProgrammingLanguages.map((rt: any, index:any) => {
-                            return <MenuItem value={rt.value}>{rt.text}</MenuItem>
-                        })
-                    }
-
-                    </Select>
+                    <FormControl variant="outlined" style={{ marginTop: '0px', marginRight: '16px', width: '120px' }}>
+                        <InputLabel htmlFor="outlined-basic">language</InputLabel>
+                        <Select
+                            id="outlined-basic"
+                            value={programmingLanguage}
+                            onChange={val => setprogrammingLanguage(val.target.value)}
+                            label="Programming language"
+                            style={{ height: '55px'}}>
+                            {ProgrammingLanguages.map((rt: any, index: any) => (
+                            <MenuItem key={index} value={rt.value}>
+                                {rt.text}
+                            </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                 </div>
                 <div>
                     <Button 
