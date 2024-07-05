@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Method } from "../models/Method";
 import { ProgrammingLanguages } from "../models/ProgrammingLanguages";
 import { buildTextField } from "./CustomComponents";
-import { Button, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import { Button, Select, MenuItem, FormControl, InputLabel, FormHelperText } from "@mui/material";
 import axios from "axios";
 import { v1 as uuidv1 } from 'uuid';
 import ValidationErrorSnackbar from "./ValidationErrorComponent";
@@ -11,18 +11,24 @@ import ValidationErrorSnackbar from "./ValidationErrorComponent";
 export default function GenerateTestsContent(props: {methods: Method[], directory: string, setDirectory: any}) {
 
     // const [directory, setDirectory] = useState('');
-    const [showError, setShowError] = useState(false);
-    const [errorMsg, setErrorMsg] = useState('');
+    const [DiretoryshowError, setDiretoryShowError] = useState(false);
+    const [DiretoryErrorMsg, setDiretoryErrorMsg] = useState('');
+    const [languageShowError, setLanguageShowError] = useState(false);
     const [genResult, setGenResult] = useState('');
-    const [programmingLanguage, setprogrammingLanguage] = useState("")
+    const [programmingLanguage, setprogrammingLanguage] = useState('')
 
     function validateAndSendReq() {
-        setErrorMsg('');
-        setShowError(false);
+        setDiretoryErrorMsg('');
+        setDiretoryShowError(false);
+        setLanguageShowError(false);
 
         if (props.directory == '') {
-            setErrorMsg('Please, paste the directory where to save the files');
-            setShowError(true);
+            setDiretoryErrorMsg('Please, paste the directory where to save the files');
+            setDiretoryShowError(true);
+            return;
+        }
+        else if (programmingLanguage == '') {
+            setLanguageShowError(true);
             return;
         }
 
@@ -57,23 +63,28 @@ export default function GenerateTestsContent(props: {methods: Method[], director
                             borderRadius: '5px',
                         }}>
                 <div style={{marginTop:'12px', marginRight:'16px', width: '100%'}}>
-                    {buildTextField("Directory", props.directory, (v: any) => props.setDirectory(v.target.value), false, false, showError, errorMsg)}
+                    {buildTextField("Directory", props.directory, (v: any) => props.setDirectory(v.target.value), false, false, DiretoryshowError, DiretoryErrorMsg)}
                 </div>
                 <div>
-                    <FormControl variant="outlined" style={{ marginTop: '0px', marginRight: '16px', width: '120px' }}>
+                    <FormControl
+                    variant="outlined"
+                    error = {languageShowError}
+                    style={{ marginTop: '0px', marginRight: '16px', width: '120px' }}>
                         <InputLabel htmlFor="outlined-basic">language</InputLabel>
                         <Select
                             id="outlined-basic"
                             value={programmingLanguage}
                             onChange={val => setprogrammingLanguage(val.target.value)}
                             label="Programming language"
-                            style={{ height: '55px'}}>
+                            style={{ height: '55px', marginBottom: languageShowError ? '8px' : '' }}>
+                            
                             {ProgrammingLanguages.map((rt: any, index: any) => (
                             <MenuItem key={index} value={rt.value}>
                                 {rt.text}
                             </MenuItem>
                             ))}
                         </Select>
+                        {languageShowError && <FormHelperText>please, choose a programming language</FormHelperText>}
                     </FormControl>
                 </div>
                 <div>
@@ -86,7 +97,7 @@ export default function GenerateTestsContent(props: {methods: Method[], director
                             Generate tests
                     </Button>
                     {
-                        showError ? 
+                        DiretoryshowError ? 
                             <div style={{height: '21px'}} />
                         :   <div />
                     }
