@@ -13,7 +13,7 @@ export default function GenerateTestsContent(props: {methods: Method[], director
     // const [directory, setDirectory] = useState('');
     const [DiretoryshowError, setDiretoryShowError] = useState(false);
     const [DiretoryErrorMsg, setDiretoryErrorMsg] = useState('');
-    const [languageShowError, setLanguageShowError] = useState(false);
+    const [LanguageShowError, setLanguageShowError] = useState(false);
     const [genResult, setGenResult] = useState('');
     const [programmingLanguage, setprogrammingLanguage] = useState('')
 
@@ -27,7 +27,7 @@ export default function GenerateTestsContent(props: {methods: Method[], director
             setDiretoryShowError(true);
             return;
         }
-        else if (programmingLanguage == '') {
+        if (programmingLanguage == '') {
             setLanguageShowError(true);
             return;
         }
@@ -52,7 +52,7 @@ export default function GenerateTestsContent(props: {methods: Method[], director
         
         <div style={{fontSize: '20px', textAlign: 'justify', color: 'black'}}>
         <ValidationErrorSnackbar open={genResult != ''} message={genResult} changeOpenState={() => setGenResult('')} />
-           Paste the location where to save the test files:
+           Paste the location where to save the test files and choose a programming language:
 
            <div style={{
                             paddingRight: '0px',
@@ -64,19 +64,24 @@ export default function GenerateTestsContent(props: {methods: Method[], director
                         }}>
                 <div style={{marginTop:'12px', marginRight:'16px', width: '100%'}}>
                     {buildTextField("Directory", props.directory, (v: any) => props.setDirectory(v.target.value), false, false, DiretoryshowError, DiretoryErrorMsg)}
+                    {
+                        LanguageShowError? 
+                            <div style={{height: '65px'}} />
+                        :   <div />
+                    }
                 </div>
                 <div>
                     <FormControl
                     variant="outlined"
-                    error = {languageShowError}
-                    style={{ marginTop: '0px', marginRight: '16px', width: '120px' }}>
+                    error = {LanguageShowError}
+                    style={{ marginTop: '0px', marginRight: '16px', width: '150px' }}>
                         <InputLabel htmlFor="outlined-basic">language</InputLabel>
                         <Select
                             id="outlined-basic"
                             value={programmingLanguage}
                             onChange={val => setprogrammingLanguage(val.target.value)}
                             label="Programming language"
-                            style={{ height: '55px', marginBottom: languageShowError ? '8px' : '' }}>
+                            style={{ height: '55px' }}>
                             
                             {ProgrammingLanguages.map((rt: any, index: any) => (
                             <MenuItem key={index} value={rt.value}>
@@ -84,8 +89,13 @@ export default function GenerateTestsContent(props: {methods: Method[], director
                             </MenuItem>
                             ))}
                         </Select>
-                        {languageShowError && <FormHelperText>please, choose a programming language</FormHelperText>}
+                        {LanguageShowError && <FormHelperText style={{width: "140px"}}>Please, choose a programming language</FormHelperText>}
                     </FormControl>
+                    {
+                        DiretoryshowError || LanguageShowError? 
+                            <div style={{height: '23px'}} />
+                        :   <div />
+                    }
                 </div>
                 <div>
                     <Button 
@@ -97,8 +107,10 @@ export default function GenerateTestsContent(props: {methods: Method[], director
                             Generate tests
                     </Button>
                     {
-                        DiretoryshowError ? 
-                            <div style={{height: '21px'}} />
+                        DiretoryshowError? 
+                            <div style={{height: '23px'}} />
+                        :   LanguageShowError?
+                            <div style={{height: '65px'}} />
                         :   <div />
                     }
                 </div>
