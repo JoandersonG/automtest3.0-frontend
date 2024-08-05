@@ -20,10 +20,10 @@ export default function ValidationErrorSnackbar(props: {open: boolean, message: 
             anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} 
             action={<React.Fragment>
                         <IconButton
-                        size="small"
-                        aria-label="close"
-                        color="inherit"
-                        onClick={() => props.changeOpenState()}
+                            size="small"
+                            aria-label="close"
+                            color="inherit"
+                            onClick={() => props.changeOpenState()}
                         >
                         <CloseIcon fontSize="small" />
                         </IconButton>

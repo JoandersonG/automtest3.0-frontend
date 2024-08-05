@@ -4,7 +4,6 @@ import { Method } from "../models/Method";
 import { buildTextField } from "./CustomComponents";
 import { Button } from "@mui/material";
 import axios from "axios";
-import { v1 as uuidv1 } from 'uuid';
 import ValidationErrorSnackbar from "./ValidationErrorComponent";
 
 export default function GenerateTestsContent(props: {methods: Method[], directory: string, setDirectory: any}) {
@@ -35,7 +34,7 @@ export default function GenerateTestsContent(props: {methods: Method[], director
         })
         .catch(error => {
             console.error('Error fetching data:', error);
-            setGenResult('Ocorreu um erro ao gerar os testes');
+            setGenResult('An error occurred while generating tests');
         });
         
     }

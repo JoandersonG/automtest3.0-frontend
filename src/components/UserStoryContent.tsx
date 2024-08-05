@@ -1,9 +1,7 @@
-import { Button, CircularProgress, IconButton } from "@mui/material";
-import Snackbar from '@mui/material/Snackbar';
-import { ButtonPrimary, RadioButton, RadioGroup, ResponsiveLayout, Stack, Text2, Text3, Text4, Text5, TextField } from "@telefonica/mistica";
-import CloseIcon from '@mui/icons-material/Close';
+import { Button, CircularProgress } from "@mui/material";
+import { RadioButton, RadioGroup, Stack, Text3, Text5 } from "@telefonica/mistica";
 import axios from "axios";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useState } from "react";
 import { v1 as uuidv1 } from 'uuid';
 import ValidationErrorSnackbar from "./ValidationErrorComponent";
@@ -96,7 +94,7 @@ export default function UserStoryContent(props: {setMethods: any, showMethodsLis
                         justifyContent:"center", 
                         alignItems:"center"}}>
                             <div style={{color: 'black'}}>
-                            Um Erro ocorreu ao enviar requisição para o backend:
+                            A error occurred while requesting AutomTest's backend:
                             <br />
                             <br />
                             <br />
@@ -104,7 +102,7 @@ export default function UserStoryContent(props: {setMethods: any, showMethodsLis
                             <br />
                             <br />
                             <br />
-                            <Button disableElevation variant="outlined" style={{marginLeft: '120px'}} onClick={() => setShowError(false)}>Tentar novamente</Button>
+                            <Button disableElevation variant="outlined" style={{marginLeft: '120px'}} onClick={() => setShowError(false)}>Try again</Button>
                             </div>
                     </div>
                 :
