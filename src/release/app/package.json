@@ -2,7 +2,7 @@
   "description": "AutomTest 3.0 - Frontend",
   "name": "autom-test-frontend",
   "productName": "AutomTest 3.0 - Frontend",
-  "version": "0.1.0",
+  "version": "3.0.0",
   "keywords": [
     "electron",
     "boilerplate",

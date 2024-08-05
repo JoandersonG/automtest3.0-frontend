@@ -1,7 +1,7 @@
 {
-  "name": "electron-react-boilerplate",
+  "name": "automtest-frontend",
   "version": "3.0.0",
-  "description": "A foundation for scalable desktop apps",
+  "description": "A testcase generator tool",
   "license": "MIT",
   "author": {
     "name": "Electron React Boilerplate Maintainers",
