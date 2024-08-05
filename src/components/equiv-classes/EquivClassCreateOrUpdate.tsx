@@ -170,7 +170,7 @@ export default function EquivClassCreateOrUpdate(props: {methodsAvaliable: Metho
                         && !(
                                 /^[0-9]+$/.test(paramDataRange.v1)
                                 && /^[0-9]+$/.test(paramDataRange.v2)
-                                && /^([0-9]+(;[0-9]+)*)$/.test(paramDataRange.v3)
+                                && /^([0-9]+(;[0-9]+)*){0,1}$/.test(paramDataRange.v3)
                                 && parseInt(paramDataRange.v1) <= parseInt(paramDataRange.v2)
                             )
             ) {
