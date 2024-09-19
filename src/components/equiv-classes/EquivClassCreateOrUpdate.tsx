@@ -127,7 +127,7 @@ export default function EquivClassCreateOrUpdate(props: {methodsAvaliable: Metho
         for (let i = 0; i < paramsDataRange.length; i++) {
             const paramDataRange = paramsDataRange[i];
             const param = currentMethod.parameters.find(p => p.identifier == paramDataRange.param_id);
-            const type = param?.type;
+            const type = param?.type?.toLowerCase();
             const paramName = param?.name;
             if (type == 'boolean' && !(paramDataRange.v1.toLowerCase() == 'true' || paramDataRange.v1.toLowerCase() == 'false')) {
                              
